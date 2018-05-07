@@ -10,35 +10,64 @@ const { makeExecutableSchema } = require('graphql-tools');
 
 const tweets = [
   {
-    text: 'Published the next edition of "the Road to learn React"',
-    author: 'Robin Wieruch',
+    id: 't1',
+    authorId: '1',
+    text: 'Published the next edition of the Road to learn React',
   },
   {
-    text:
-      'Releasing "a complete React with Apollo and GraphQL Tutorial" for building a GitHub client',
-    author: 'Robin Wieruch',
+    id: 't2',
+    authorId: '1',
+    text: 'A complete React with Apollo and GraphQL Tutorial',
   },
   {
-    text:
-      'Releasing a GraphQL in React tutorial which will end up in a ebook teaching about it about React with GraphQL',
-    author: 'Robin Wieruch',
+    id: 't3',
+    authorId: '2',
+    text: 'Happy to release a GraphQL in React tutorial',
+  },
+];
+
+const authors = [
+  {
+    id: '1',
+    tweets: ['t1', 't2'],
+    username: 'Robin Wieruch',
+  },
+  {
+    id: '2',
+    tweets: ['t3'],
+    username: 'Dave Davids',
   },
 ];
 
 const typeDefs = `
   type Query {
     tweets: [Tweet]
+    authors: [Author]
+    getAuthorById(id: String!): Author
+    getTweetsByAuthorId(id: String!): [Tweet]
   }
 
   type Tweet {
+    id: String!
+    authorId: String
     text: String
-    author: String
+  }
+
+  type Author {
+    id: String!
+    username: String,
+    tweets: [String]
   }
 `;
 
 const resolvers = {
   Query: {
     tweets: () => tweets,
+    authors: () => authors,
+    getAuthorById: (_, { id }) =>
+      authors.find(author => author.id === id),
+    getTweetsByAuthorId: (_, { id }) =>
+      tweets.filter(tweet => tweet.authorId === id),
   },
 };
 
