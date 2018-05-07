@@ -8,6 +8,12 @@ const {
 
 const { makeExecutableSchema } = require('graphql-tools');
 
+let idIterator = 3;
+const generateId = () => {
+  idIterator++;
+  return idIterator;
+};
+
 const tweets = [
   {
     id: 't1',
@@ -47,6 +53,10 @@ const typeDefs = `
     getTweetsByAuthorId(id: String!): [Tweet]
   }
 
+  type Mutation {
+    addTweet(authorId: String!, text: String!): Tweet
+  }
+
   type Tweet {
     id: String!
     authorId: String
@@ -68,6 +78,18 @@ const resolvers = {
       authors.find(author => author.id === id),
     getTweetsByAuthorId: (_, { id }) =>
       tweets.filter(tweet => tweet.authorId === id),
+  },
+
+  Mutation: {
+    addTweet: (_, { authorId, text }) => {
+      const id = `t${generateId()}`;
+      const tweet = { id, text, authorId };
+
+      tweets.push(tweet);
+      authors.find(author => author.id === authorId).tweets.push(id);
+
+      return tweet;
+    },
   },
 };
 
