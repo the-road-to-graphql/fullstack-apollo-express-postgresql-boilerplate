@@ -1,12 +1,12 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+import express from 'express';
+import bodyParser from 'body-parser';
 
-const {
+import {
   graphqlExpress,
   graphiqlExpress,
-} = require('apollo-server-express');
+} from 'apollo-server-express';
 
-const { makeExecutableSchema } = require('graphql-tools');
+import { makeExecutableSchema } from 'graphql-tools';
 
 let idIterator = 3;
 const generateId = () => {
