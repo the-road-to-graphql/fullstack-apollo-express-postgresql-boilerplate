@@ -49,8 +49,12 @@ const typeDefs = `
   type Query {
     tweets: [Tweet]
     authors: [Author]
-    getAuthorById(id: String!): Author
-    getTweetsByAuthorId(id: String!): [Tweet]
+
+    author(id: String!): Author
+    tweetsByAuthorId(id: String!): [Tweet]
+
+    tweet(id: String!): Tweet
+    authorByTweetId(id: String!): Author
   }
 
   type Mutation {
@@ -59,14 +63,14 @@ const typeDefs = `
 
   type Tweet {
     id: String!
-    authorId: String
+    author: Author
     text: String
   }
 
   type Author {
     id: String!
     username: String,
-    tweets: [String]
+    tweets: [Tweet]
   }
 `;
 
@@ -74,10 +78,14 @@ const resolvers = {
   Query: {
     tweets: () => tweets,
     authors: () => authors,
-    getAuthorById: (_, { id }) =>
-      authors.find(author => author.id === id),
-    getTweetsByAuthorId: (_, { id }) =>
+
+    author: (_, { id }) => authors.find(author => author.id === id),
+    tweetsByAuthorId: (_, { id }) =>
       tweets.filter(tweet => tweet.authorId === id),
+
+    tweet: (_, { id }) => tweets.find(tweet => tweet.id === id),
+    authorByTweetId: (_, { id }) =>
+      authors.find(author => author.tweets.includes(id)),
   },
 
   Mutation: {
@@ -90,6 +98,16 @@ const resolvers = {
 
       return tweet;
     },
+  },
+
+  Author: {
+    tweets: author =>
+      tweets.filter(tweet => tweet.authorId === author.id),
+  },
+
+  Tweet: {
+    author: tweet =>
+      authors.filter(author => author.tweetId === tweet.id),
   },
 };
 
