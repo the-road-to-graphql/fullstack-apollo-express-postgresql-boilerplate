@@ -4,9 +4,7 @@ const tweet = (sequelize, DataTypes) => {
   });
 
   Tweet.associate = models => {
-    Tweet.belongsTo(models.Author, {
-      foreignKey: 'tweetId',
-    });
+    Tweet.belongsTo(models.Author);
   };
 
   return Tweet;

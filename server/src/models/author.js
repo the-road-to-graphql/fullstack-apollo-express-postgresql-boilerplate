@@ -7,9 +7,7 @@ const author = (sequelize, DataTypes) => {
   });
 
   Author.associate = models => {
-    Author.hasMany(models.Tweet, {
-      foreignKey: 'authorId',
-    });
+    Author.hasMany(models.Tweet);
   };
 
   return Author;
