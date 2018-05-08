@@ -1,27 +1,27 @@
 const typeDefs = `
   type Query {
-    tweets: [Tweet]
-    authors: [Author]
+    tweets: [Tweet!]!
+    authors: [Author!]!
 
-    author(id: String!): Author
-    tweet(id: String!): Tweet
+    author(id: String!): Author!
+    tweet(id: String!): Tweet!
   }
 
   type Mutation {
-    addTweet(authorId: String!, text: String!): Tweet
+    addTweet(authorId: String!, text: String!): Tweet!
   }
 
   type Tweet {
     id: String!
     authorId: String!
-    author: Author
-    text: String
+    author: Author!
+    text: String!
   }
 
   type Author {
     id: String!
     username: String!,
-    tweets: [Tweet]
+    tweets: [Tweet!]!
   }
 `;
 
