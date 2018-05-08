@@ -4,10 +4,7 @@ const typeDefs = `
     authors: [Author]
 
     author(id: String!): Author
-    tweetsByAuthorId(id: String!): [Tweet]
-
     tweet(id: String!): Tweet
-    authorByTweetId(id: String!): Author
   }
 
   type Mutation {
@@ -16,13 +13,14 @@ const typeDefs = `
 
   type Tweet {
     id: String!
+    authorId: String!
     author: Author
     text: String
   }
 
   type Author {
     id: String!
-    username: String,
+    username: String!,
     tweets: [Tweet]
   }
 `;
