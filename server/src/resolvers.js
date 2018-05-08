@@ -1,3 +1,9 @@
+let idIterator = 3;
+const generateId = () => {
+  idIterator++;
+  return idIterator;
+};
+
 const tweets = [
   {
     id: 't1',

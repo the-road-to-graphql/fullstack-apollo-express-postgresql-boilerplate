@@ -1,0 +1,10 @@
+2018-05-07 15:18:04.463 WITA [85960] LOG:  listening on IPv6 address "::1", port 5432
+2018-05-07 15:18:04.463 WITA [85960] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2018-05-07 15:18:04.464 WITA [85960] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2018-05-07 15:18:04.477 WITA [85961] LOG:  database system was shut down at 2018-05-07 15:10:34 WITA
+2018-05-07 15:18:04.481 WITA [85960] LOG:  database system is ready to accept connections
+2018-05-07 15:18:09.538 WITA [85960] LOG:  received fast shutdown request
+2018-05-07 15:18:09.540 WITA [85960] LOG:  aborting any active transactions
+2018-05-07 15:18:09.541 WITA [85960] LOG:  worker process: logical replication launcher (PID 85967) exited with exit code 1
+2018-05-07 15:18:09.542 WITA [85962] LOG:  shutting down
+2018-05-07 15:18:09.549 WITA [85960] LOG:  database system is shut down
