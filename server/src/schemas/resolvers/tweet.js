@@ -1,16 +1,8 @@
-import models from './models';
+import models from '../../models';
 
-const resolvers = {
+export default {
   Query: {
     tweets: async () => await models.Tweet.findAll(),
-    authors: async () => await models.Author.findAll(),
-
-    author: async (_, { id }) =>
-      await models.Author.find({
-        where: {
-          id,
-        },
-      }),
 
     tweet: async (_, { id }) =>
       await models.Tweet.find({
@@ -28,15 +20,6 @@ const resolvers = {
       }),
   },
 
-  Author: {
-    tweets: async author =>
-      await models.Tweet.findAll({
-        where: {
-          authorId: author.id,
-        },
-      }),
-  },
-
   Tweet: {
     author: async tweet =>
       await models.Author.find({
@@ -46,5 +29,3 @@ const resolvers = {
       }),
   },
 };
-
-export default resolvers;

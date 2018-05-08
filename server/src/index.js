@@ -6,16 +6,8 @@ import {
   graphiqlExpress,
 } from 'apollo-server-express';
 
-import { makeExecutableSchema } from 'graphql-tools';
-
-import typeDefs from './typeDefs';
-import resolvers from './resolvers';
+import schema from './schemas';
 import models, { sequelize } from './models';
-
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
 
 const app = express();
 
