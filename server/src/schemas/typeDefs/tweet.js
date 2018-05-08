@@ -5,7 +5,8 @@ export default `
   }
 
   extend type Mutation {
-    addTweet(authorId: String!, text: String!): Tweet!
+    createTweet(authorId: String!, text: String!): Tweet!
+    deleteTweet(id: String!): Boolean!
   }
 
   type Tweet {

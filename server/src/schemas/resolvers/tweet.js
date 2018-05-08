@@ -4,28 +4,22 @@ export default {
   Query: {
     tweets: async () => await models.Tweet.findAll(),
 
-    tweet: async (_, { id }) =>
-      await models.Tweet.find({
-        where: {
-          id,
-        },
-      }),
+    tweet: async (_, { id }) => await models.Tweet.findById(id),
   },
 
   Mutation: {
-    addTweet: async (_, { authorId, text }) =>
+    createTweet: async (_, { authorId, text }) =>
       await models.Tweet.create({
         text,
         authorId,
       }),
+
+    deleteTweet: async (_, { id }) =>
+      await models.Tweet.destroy({ where: { id } }),
   },
 
   Tweet: {
     author: async tweet =>
-      await models.Author.find({
-        where: {
-          id: tweet.authorId,
-        },
-      }),
+      await models.Author.findById(tweet.authorId),
   },
 };
