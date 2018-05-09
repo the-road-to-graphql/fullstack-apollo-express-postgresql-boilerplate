@@ -1,29 +1,29 @@
-import models from '../../models';
-
 export default {
   Query: {
-    authors: async () => await models.Author.findAll(),
+    authors: async (parent, args, { models }) =>
+      await models.Author.findAll(),
 
-    author: async (_, { id }) => await models.Author.findById(id),
+    author: async (parent, { id }, { models }) =>
+      await models.Author.findById(id),
   },
 
   Mutation: {
-    createAuthor: async (_, { username }) =>
+    createAuthor: async (parent, { username }, { models }) =>
       await models.Author.create({
         username,
       }),
 
-    updateAuthor: async (_, { id, username }) => {
+    updateAuthor: async (parent, { id, username }, { models }) => {
       const author = await models.Author.findById(id);
       return await author.update({ username });
     },
 
-    deleteAuthor: async (_, { id }) =>
+    deleteAuthor: async (parent, { id }, { models }) =>
       await models.Author.destroy({ where: { id } }),
   },
 
   Author: {
-    tweets: async author =>
+    tweets: async (author, args, { models }) =>
       await models.Tweet.findAll({
         where: {
           authorId: author.id,

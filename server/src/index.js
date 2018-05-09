@@ -11,7 +11,12 @@ import models, { sequelize } from './models';
 
 const app = express();
 
-app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
+app.use(
+  '/graphql',
+  bodyParser.json(),
+  graphqlExpress({ schema, context: { models } }),
+);
+
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 
 sequelize.sync({ force: true }).then(() => {
