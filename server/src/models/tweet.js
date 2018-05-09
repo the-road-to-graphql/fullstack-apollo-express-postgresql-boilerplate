@@ -1,6 +1,9 @@
 const tweet = (sequelize, DataTypes) => {
   const Tweet = sequelize.define('tweet', {
-    text: DataTypes.STRING,
+    text: {
+      type: DataTypes.STRING,
+      validate: { notEmpty: true },
+    },
   });
 
   Tweet.associate = models => {
