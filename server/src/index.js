@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 import {
   graphqlExpress,
@@ -10,6 +11,8 @@ import schema from './schemas';
 import models, { sequelize } from './models';
 
 const app = express();
+
+app.use(cors());
 
 app.use(
   '/graphql',
@@ -53,9 +56,9 @@ sequelize.sync({ force: true }).then(() => {
   );
 
   Promise.all([createPromiseOne, createPromiseTwo]).then(() => {
-    app.listen(3000, () => {
+    app.listen(8000, () => {
       console.log(
-        'Go to http://localhost:3000/graphiql for GraphiQL',
+        'Go to http://localhost:8000/graphiql for GraphiQL',
       );
     });
   });
