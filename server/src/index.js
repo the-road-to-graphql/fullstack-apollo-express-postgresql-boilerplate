@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -10,6 +12,8 @@ import {
 import schema from './schemas';
 import models, { sequelize } from './models';
 
+dotenv.config();
+
 const app = express();
 
 app.use(cors());
@@ -19,7 +23,7 @@ app.use(
   bodyParser.json(),
   graphqlExpress({
     schema,
-    context: { models, secret: 'asfwfwefwekwself.2342.dawqdq' },
+    context: { models, secret: process.env.SECRET },
   }),
 );
 
