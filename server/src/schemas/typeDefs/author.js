@@ -5,7 +5,8 @@ export default `
   }
 
   extend type Mutation {
-    createAuthor(username: String!): Author!
+    signUp(username: String!, email: String!, password: String!): Author!
+
     updateAuthor(id: String!, username: String!): Author!
     deleteAuthor(id: String!): Boolean!
   }

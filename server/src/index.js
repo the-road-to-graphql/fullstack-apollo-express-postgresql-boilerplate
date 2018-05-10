@@ -22,10 +22,12 @@ app.use(
 
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync({ force: true }).then(async () => {
   const createPromiseOne = models.Author.create(
     {
       username: 'Robin Wieruch',
+      email: 'robin@wieruch.com',
+      password: 'robin@wieruch',
       tweets: [
         {
           text:
@@ -44,6 +46,8 @@ sequelize.sync({ force: true }).then(() => {
   const createPromiseTwo = models.Author.create(
     {
       username: 'Dave Davids',
+      email: 'dave@davids.com',
+      password: 'dave@davids',
       tweets: [
         {
           text: 'Happy to release a GraphQL in React tutorial',

@@ -8,10 +8,17 @@ export default {
   },
 
   Mutation: {
-    createAuthor: async (parent, { username }, { models }) =>
-      await models.Author.create({
+    signUp: async (
+      parent,
+      { username, email, password },
+      { models },
+    ) => {
+      return await models.Author.create({
         username,
-      }),
+        email,
+        password,
+      });
+    },
 
     updateAuthor: async (parent, { id, username }, { models }) => {
       const author = await models.Author.findById(id);
