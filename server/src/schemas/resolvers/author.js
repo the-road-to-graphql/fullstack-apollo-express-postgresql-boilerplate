@@ -47,13 +47,17 @@ export default {
       return { token: createToken(user, secret, '30m') };
     },
 
-    updateAuthor: async (parent, { id, username }, { models }) => {
-      const author = await models.Author.findById(id);
+    updateAuthor: async (
+      parent,
+      { username },
+      { models, currentUser },
+    ) => {
+      const author = await models.Author.findById(currentUser.id);
       return await author.update({ username });
     },
 
-    deleteAuthor: async (parent, { id }, { models }) =>
-      await models.Author.destroy({ where: { id } }),
+    deleteAuthor: async (parent, args, { models, currentUser }) =>
+      await models.Author.destroy({ where: { id: currentUser.id } }),
   },
 
   Author: {

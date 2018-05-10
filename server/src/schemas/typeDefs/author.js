@@ -8,8 +8,8 @@ export default `
     signUp(username: String!, email: String!, password: String!): Author!
     signIn(login: String!, password: String!): Token!
 
-    updateAuthor(id: String!, username: String!): Author!
-    deleteAuthor(id: String!): Boolean!
+    updateAuthor(username: String!): Author!
+    deleteAuthor: Boolean!
   }
 
   type Token {
