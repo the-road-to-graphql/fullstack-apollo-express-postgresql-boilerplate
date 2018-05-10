@@ -8,10 +8,10 @@ export default {
   },
 
   Mutation: {
-    createTweet: async (parent, { authorId, text }, { models }) =>
+    createTweet: async (parent, { text }, { models, currentUser }) =>
       await models.Tweet.create({
         text,
-        authorId,
+        authorId: currentUser.id,
       }),
 
     deleteTweet: async (parent, { id }, { models }) =>
