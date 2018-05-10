@@ -17,7 +17,10 @@ app.use(cors());
 app.use(
   '/graphql',
   bodyParser.json(),
-  graphqlExpress({ schema, context: { models } }),
+  graphqlExpress({
+    schema,
+    context: { models, secret: 'asfwfwefwekwself.2342.dawqdq' },
+  }),
 );
 
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
@@ -25,7 +28,7 @@ app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 sequelize.sync({ force: true }).then(async () => {
   const createPromiseOne = models.Author.create(
     {
-      username: 'Robin Wieruch',
+      username: 'rwieruch',
       email: 'robin@wieruch.com',
       password: 'robin@wieruch',
       tweets: [
@@ -45,7 +48,7 @@ sequelize.sync({ force: true }).then(async () => {
 
   const createPromiseTwo = models.Author.create(
     {
-      username: 'Dave Davids',
+      username: 'ddavids',
       email: 'dave@davids.com',
       password: 'dave@davids',
       tweets: [

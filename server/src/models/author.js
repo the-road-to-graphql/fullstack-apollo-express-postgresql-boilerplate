@@ -1,10 +1,5 @@
 import bcrypt from 'bcrypt';
 
-export const createHashedPassword = async password => {
-  const saltRounds = 10;
-  return await bcrypt.hash(password, saltRounds);
-};
-
 const author = (sequelize, DataTypes) => {
   const Author = sequelize.define('author', {
     username: {
@@ -34,21 +29,35 @@ const author = (sequelize, DataTypes) => {
     },
   });
 
-  Author.generatePasswordHash = async password => {
-    const saltRounds = 10;
-    return await bcrypt.hash(password, saltRounds);
-  };
+  Author.findByLogin = async login => {
+    let user = await Author.findOne({
+      where: { username: login },
+    });
 
-  Author.validatePasswordWithHash = async password => {
-    return await bcrypt.compare(password, this.password);
-  };
+    if (!user) {
+      user = await Author.findOne({
+        where: { email: login },
+      });
+    }
 
-  Author.beforeCreate(async function(user) {
-    user.password = await this.generatePasswordHash(user.password);
-  });
+    return user;
+  };
 
   Author.associate = models => {
     Author.hasMany(models.Tweet);
+  };
+
+  Author.beforeCreate(async user => {
+    user.password = await user.generatePasswordHash();
+  });
+
+  Author.prototype.generatePasswordHash = async function() {
+    const saltRounds = 10;
+    return await bcrypt.hash(this.password, saltRounds);
+  };
+
+  Author.prototype.validatePassword = async function(password) {
+    return await bcrypt.compare(password, this.password);
   };
 
   return Author;

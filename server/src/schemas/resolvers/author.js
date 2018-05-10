@@ -1,3 +1,10 @@
+import jwt from 'jsonwebtoken';
+
+const createToken = async (user, secret, expiresIn) => {
+  const { id, email } = user;
+  return await jwt.sign({ id, email }, secret, { expiresIn });
+};
+
 export default {
   Query: {
     authors: async (parent, args, { models }) =>
@@ -18,6 +25,26 @@ export default {
         email,
         password,
       });
+    },
+
+    signIn: async (
+      parent,
+      { login, password },
+      { models, secret },
+    ) => {
+      const user = await models.Author.findByLogin(login);
+
+      if (!user) {
+        throw new Error('No user found with this login credentials.');
+      }
+
+      const isValid = await user.validatePassword(password);
+
+      if (!isValid) {
+        throw new Error('Invalid password.');
+      }
+
+      return { token: createToken(user, secret, '30m') };
     },
 
     updateAuthor: async (parent, { id, username }, { models }) => {
