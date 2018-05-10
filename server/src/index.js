@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import jwt from 'jsonwebtoken';
 
 import {
   graphqlExpress,
@@ -18,13 +19,37 @@ const app = express();
 
 app.use(cors());
 
+app.use(async (req, res, next) => {
+  const token = req.headers['x-token'];
+
+  if (token) {
+    let payload;
+
+    try {
+      payload = await jwt.verify(token, process.env.SECRET);
+    } catch (e) {
+      const error = 'Your session expired. Sign in again.';
+      res.status(401).json({ error });
+    }
+
+    req.id = payload.id;
+    req.email = payload.email;
+  }
+
+  next();
+});
+
 app.use(
   '/graphql',
   bodyParser.json(),
-  graphqlExpress({
+  graphqlExpress(async ({ id, email }) => ({
     schema,
-    context: { models, secret: process.env.SECRET },
-  }),
+    context: {
+      models,
+      secret: process.env.SECRET,
+      currentUser: { id, email },
+    },
+  })),
 );
 
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
