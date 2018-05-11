@@ -21,10 +21,10 @@ const INITIAL_STATE = {
   passwordConfirmation: '',
 };
 
-const SignUpPage = ({ history }) => (
+const SignUpPage = ({ history, refetch }) => (
   <div>
     <h1>SignUp</h1>
-    <SignUpForm history={history} />
+    <SignUpForm history={history} refetch={refetch} />
   </div>
 );
 
@@ -37,10 +37,12 @@ class SignUpForm extends Component {
   };
 
   onSubmit = (event, signUp) => {
-    signUp().then(({ data }) => {
+    signUp().then(async ({ data }) => {
       this.setState({ ...INITIAL_STATE });
 
       localStorage.setItem('token', data.signUp.token);
+
+      await this.props.refetch();
 
       this.props.history.push(routes.LANDING);
     });

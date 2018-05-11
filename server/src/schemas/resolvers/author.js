@@ -16,6 +16,14 @@ export default {
 
     author: async (parent, { id }, { models }) =>
       await models.Author.findById(id),
+
+    currentAuthor: async (parent, args, { models, currentUser }) => {
+      if (!currentUser) {
+        return null;
+      }
+
+      return await models.Author.findById(currentUser.id);
+    },
   },
 
   Mutation: {

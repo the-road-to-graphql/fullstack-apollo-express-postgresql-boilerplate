@@ -1,7 +1,8 @@
 export default `
   extend type Query {
-    authors: [Author!]!
-    author(id: String!): Author!
+    authors: [Author!]
+    author(id: String!): Author
+    currentAuthor: Author
   }
 
   extend type Mutation {
