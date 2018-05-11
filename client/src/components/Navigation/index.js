@@ -4,17 +4,17 @@ import { Link } from 'react-router-dom';
 import * as routes from '../../constants/routes';
 import SignOutButton from '../SignOut';
 
-const Navigation = ({ session, refetch }) => (
+const Navigation = ({ session }) => (
   <div>
     {session && session.currentAuthor ? (
-      <NavigationAuth />
+      <NavigationAuth session={session} />
     ) : (
       <NavigationNonAuth />
     )}
   </div>
 );
 
-const NavigationAuth = ({ refetch }) => (
+const NavigationAuth = ({ session }) => (
   <ul>
     <li>
       <Link to={routes.LANDING}>Landing</Link>
@@ -22,6 +22,13 @@ const NavigationAuth = ({ refetch }) => (
     <li>
       <Link to={routes.ACCOUNT}>Account</Link>
     </li>
+    {session &&
+      session.currentAuthor &&
+      session.currentAuthor.role === 'ADMIN' && (
+        <li>
+          <Link to={routes.ADMIN}>Admin</Link>
+        </li>
+      )}
     <li>
       <SignOutButton />
     </li>

@@ -56,7 +56,7 @@ sequelize.sync({ force: true }).then(async () => {
       username: 'rwieruch',
       email: 'robin@wieruch.com',
       password: 'robin@wieruch',
-      role: 'admin',
+      role: 'ADMIN',
       tweets: [
         {
           text:
