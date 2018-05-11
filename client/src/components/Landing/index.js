@@ -2,6 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 
+import withSession from '../Session/withSession';
+
 const CREATE_TWEET = gql`
   mutation($text: String!) {
     createTweet(text: $text) {
@@ -29,9 +31,9 @@ const GET_AUTHORS_WITH_TWEETS = gql`
   }
 `;
 
-const Landing = () => (
+const Landing = ({ session }) => (
   <Fragment>
-    <TweetCreate />
+    {session && session.currentAuthor && <TweetCreate />}
     <Tweets />
   </Fragment>
 );
@@ -84,4 +86,4 @@ const Tweets = () => (
   </Query>
 );
 
-export default Landing;
+export default withSession(Landing);
