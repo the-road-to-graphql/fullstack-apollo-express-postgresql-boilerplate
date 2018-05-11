@@ -7,7 +7,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 
 import './index.css';
 
-import App from './App';
+import App from './components/App';
 import registerServiceWorker from './registerServiceWorker';
 
 const httpLink = new HttpLink({

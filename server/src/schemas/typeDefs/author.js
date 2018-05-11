@@ -13,12 +13,14 @@ export default `
   }
 
   type Token {
-    token: String!,
+    token: String!
   }
 
   type Author {
     id: String!
-    username: String!,
+    username: String!
+    email: String!
+    role: String
     tweets: [Tweet!]!
   }
 `;

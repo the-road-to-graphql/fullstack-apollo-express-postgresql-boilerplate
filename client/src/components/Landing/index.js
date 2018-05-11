@@ -2,8 +2,6 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
-import './App.css';
-
 const GET_AUTHORS_WITH_TWEETS = gql`
   {
     authors {
@@ -17,7 +15,7 @@ const GET_AUTHORS_WITH_TWEETS = gql`
   }
 `;
 
-const App = () => (
+const Landing = () => (
   <Query query={GET_AUTHORS_WITH_TWEETS}>
     {({ data, loading, error }) => {
       const { authors } = data;
@@ -44,4 +42,4 @@ const App = () => (
   </Query>
 );
 
-export default App;
+export default Landing;
