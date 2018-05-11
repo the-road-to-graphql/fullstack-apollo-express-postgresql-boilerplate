@@ -1,22 +1,11 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
+import { GET_CURRENT_AUTHOR } from './queries';
 
-const GET_CURRENT_AUTHOR = gql`
-  {
-    currentAuthor {
-      id
-      username
-      email
-      role
-    }
-  }
-`;
-
-const withSession = Component => () => (
+const withSession = Component => props => (
   <Query query={GET_CURRENT_AUTHOR}>
     {({ data, refetch }) => (
-      <Component session={data} refetch={refetch} />
+      <Component {...props} session={data} refetch={refetch} />
     )}
   </Query>
 );
