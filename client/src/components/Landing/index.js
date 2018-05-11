@@ -39,6 +39,15 @@ const Landing = ({ session }) => (
 );
 
 class TweetCreate extends Component {
+  state = {
+    text: '',
+  };
+
+  onChange = event => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  };
+
   onSubmit = (event, createTweet) => {
     createTweet();
 
@@ -46,11 +55,19 @@ class TweetCreate extends Component {
   };
 
   render() {
+    const { text } = this.state;
+
     return (
-      <Mutation mutation={CREATE_TWEET} variables={{ text: 'foo' }}>
+      <Mutation mutation={CREATE_TWEET} variables={{ text }}>
         {(createTweet, { data, loading, error }) => (
           <form onSubmit={event => this.onSubmit(event, createTweet)}>
-            <input type="text" />
+            <textarea
+              name="text"
+              value={text}
+              onChange={this.onChange}
+              type="text"
+              placeholder="Your tweet ..."
+            />
             <button type="submit">Send</button>
           </form>
         )}
