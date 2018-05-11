@@ -4,8 +4,8 @@ import isAuthenticated from './authentication';
 
 export default {
   Query: {
-    tweets: async (parent, args, { models }) =>
-      await models.Tweet.findAll(),
+    tweets: async (parent, { order = 'DESC' }, { models }) =>
+      await models.Tweet.findAll({ order: [['createdAt', order]] }),
 
     tweet: async (parent, { id }, { models }) =>
       await models.Tweet.findById(id),
