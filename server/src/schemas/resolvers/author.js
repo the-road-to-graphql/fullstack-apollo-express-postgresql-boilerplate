@@ -22,13 +22,15 @@ export default {
     signUp: async (
       parent,
       { username, email, password },
-      { models },
+      { models, secret },
     ) => {
-      return await models.Author.create({
+      const user = await models.Author.create({
         username,
         email,
         password,
       });
+
+      return { token: createToken(user, secret, '30m') };
     },
 
     signIn: async (

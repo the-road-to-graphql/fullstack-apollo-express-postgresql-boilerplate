@@ -9,10 +9,7 @@ import ErrorMessage from '../Error';
 const SIGN_UP = gql`
   mutation($username: String!, $email: String!, $password: String!) {
     signUp(username: $username, email: $email, password: $password) {
-      id
-      username
-      email
-      role
+      token
     }
   }
 `;
@@ -40,10 +37,10 @@ class SignUpForm extends Component {
   };
 
   onSubmit = (event, signUp) => {
-    signUp().then(data => {
+    signUp().then(({ data }) => {
       this.setState({ ...INITIAL_STATE });
 
-      // TODO: set current user in global state
+      localStorage.setItem('token', data.signUp.token);
 
       this.props.history.push(routes.LANDING);
     });

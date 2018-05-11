@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Router, Route } from 'react-router-dom';
 
 import Navigation from '../Navigation';
 import LandingPage from '../Landing';
@@ -8,9 +8,10 @@ import SignInPage from '../SignIn';
 import AccountPage from '../Account';
 
 import * as routes from '../../constants/routes';
+import history from '../../constants/history';
 
 const App = () => (
-  <Router>
+  <Router history={history}>
     <div>
       <Navigation />
 

@@ -5,7 +5,7 @@ export default `
   }
 
   extend type Mutation {
-    signUp(username: String!, email: String!, password: String!): Author!
+    signUp(username: String!, email: String!, password: String!): Token!
     signIn(login: String!, password: String!): Token!
 
     updateAuthor(username: String!): Author!
