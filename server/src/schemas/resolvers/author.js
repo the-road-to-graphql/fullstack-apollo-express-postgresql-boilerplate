@@ -1,8 +1,12 @@
 import jwt from 'jsonwebtoken';
+import { combineResolvers } from 'graphql-resolvers';
+
+import isAuthenticated from './authentication';
+import { isAdmin } from './authorization';
 
 const createToken = async (user, secret, expiresIn) => {
-  const { id, email } = user;
-  return await jwt.sign({ id, email }, secret, { expiresIn });
+  const { id, email, role } = user;
+  return await jwt.sign({ id, email, role }, secret, { expiresIn });
 };
 
 export default {
@@ -47,17 +51,21 @@ export default {
       return { token: createToken(user, secret, '30m') };
     },
 
-    updateAuthor: async (
-      parent,
-      { username },
-      { models, currentUser },
-    ) => {
-      const author = await models.Author.findById(currentUser.id);
-      return await author.update({ username });
-    },
+    updateAuthor: combineResolvers(
+      isAuthenticated,
+      async (parent, { username }, { models, currentUser }) => {
+        const author = await models.Author.findById(currentUser.id);
+        return await author.update({ username });
+      },
+    ),
 
-    deleteAuthor: async (parent, args, { models, currentUser }) =>
-      await models.Author.destroy({ where: { id: currentUser.id } }),
+    deleteAuthor: combineResolvers(
+      isAdmin,
+      async (parent, { id }, { models }) =>
+        await models.Author.destroy({
+          where: { id },
+        }),
+    ),
   },
 
   Author: {

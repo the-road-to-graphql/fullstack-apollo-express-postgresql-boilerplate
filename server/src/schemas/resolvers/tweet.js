@@ -1,3 +1,7 @@
+import { combineResolvers } from 'graphql-resolvers';
+
+import isAuthenticated from './authentication';
+
 export default {
   Query: {
     tweets: async (parent, args, { models }) =>
@@ -8,14 +12,20 @@ export default {
   },
 
   Mutation: {
-    createTweet: async (parent, { text }, { models, currentUser }) =>
-      await models.Tweet.create({
-        text,
-        authorId: currentUser.id,
-      }),
+    createTweet: combineResolvers(
+      isAuthenticated,
+      async (parent, { text }, { models, currentUser }) =>
+        await models.Tweet.create({
+          text,
+          authorId: currentUser.id,
+        }),
+    ),
 
-    deleteTweet: async (parent, { id }, { models }) =>
-      await models.Tweet.destroy({ where: { id } }),
+    deleteTweet: combineResolvers(
+      isAuthenticated,
+      async (parent, { id }, { models }) =>
+        await models.Tweet.destroy({ where: { id } }),
+    ),
   },
 
   Tweet: {

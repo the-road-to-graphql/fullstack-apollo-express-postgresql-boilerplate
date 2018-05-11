@@ -23,17 +23,13 @@ app.use(async (req, res, next) => {
   const token = req.headers['x-token'];
 
   if (token) {
-    let payload;
-
     try {
-      payload = await jwt.verify(token, process.env.SECRET);
+      const currentUser = await jwt.verify(token, process.env.SECRET);
+      req.currentUser = currentUser;
     } catch (e) {
       const error = 'Your session expired. Sign in again.';
       res.status(401).json({ error });
     }
-
-    req.id = payload.id;
-    req.email = payload.email;
   }
 
   next();
@@ -42,12 +38,12 @@ app.use(async (req, res, next) => {
 app.use(
   '/graphql',
   bodyParser.json(),
-  graphqlExpress(async ({ id, email }) => ({
+  graphqlExpress(async ({ currentUser }) => ({
     schema,
     context: {
       models,
       secret: process.env.SECRET,
-      currentUser: { id, email },
+      currentUser,
     },
   })),
 );
@@ -60,6 +56,7 @@ sequelize.sync({ force: true }).then(async () => {
       username: 'rwieruch',
       email: 'robin@wieruch.com',
       password: 'robin@wieruch',
+      role: 'admin',
       tweets: [
         {
           text:

@@ -9,7 +9,7 @@ export default `
     signIn(login: String!, password: String!): Token!
 
     updateAuthor(username: String!): Author!
-    deleteAuthor: Boolean!
+    deleteAuthor(id: String!): Boolean!
   }
 
   type Token {
