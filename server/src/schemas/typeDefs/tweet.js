@@ -14,5 +14,6 @@ export default `
     authorId: String!
     author: Author!
     text: String!
+    createdAt: String!
   }
 `;

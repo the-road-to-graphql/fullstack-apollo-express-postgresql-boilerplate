@@ -18,14 +18,15 @@ const CREATE_TWEET = gql`
   }
 `;
 
-const GET_AUTHORS_WITH_TWEETS = gql`
+const GET_TWEETS_WITH_AUTHORS = gql`
   {
-    authors {
+    tweets {
       id
-      username
-      tweets {
+      text
+      createdAt
+      author {
         id
-        text
+        username
       }
     }
   }
@@ -33,6 +34,7 @@ const GET_AUTHORS_WITH_TWEETS = gql`
 
 const Landing = ({ session }) => (
   <Fragment>
+    <h2>Feed</h2>
     {session && session.currentAuthor && <TweetCreate />}
     <Tweets />
   </Fragment>
@@ -77,24 +79,21 @@ class TweetCreate extends Component {
 }
 
 const Tweets = () => (
-  <Query query={GET_AUTHORS_WITH_TWEETS}>
+  <Query query={GET_TWEETS_WITH_AUTHORS}>
     {({ data, loading, error }) => {
-      const { authors } = data;
+      const { tweets } = data;
 
-      if (loading || !authors) {
+      if (loading || !tweets) {
         return <div>Loading ...</div>;
       }
 
       return (
         <div>
-          {authors.map(author => (
-            <div key={author.id}>
-              <h2>{author.username}</h2>
-              <div>
-                {author.tweets.map(tweet => (
-                  <div key={tweet.id}>{tweet.text}</div>
-                ))}
-              </div>
+          {tweets.map(tweet => (
+            <div key={tweet.id}>
+              <h3>{tweet.author.username}</h3>
+              <small>{tweet.createdAt}</small>
+              <p>{tweet.text}</p>
             </div>
           ))}
         </div>
