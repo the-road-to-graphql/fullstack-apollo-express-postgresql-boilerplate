@@ -50,10 +50,13 @@ class TweetCreate extends Component {
     this.setState({ [name]: value });
   };
 
-  onSubmit = (event, createTweet) => {
-    createTweet();
-
+  onSubmit = async (event, createTweet) => {
     event.preventDefault();
+
+    try {
+      await createTweet();
+      this.setState({ text: '' });
+    } catch (error) {}
   };
 
   render() {
