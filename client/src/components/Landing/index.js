@@ -19,8 +19,8 @@ const CREATE_TWEET = gql`
 `;
 
 const GET_TWEETS_WITH_AUTHORS = gql`
-  {
-    tweets {
+  query($offset: Int!, $limit: Int!) {
+    tweets(order: "DESC", offset: $offset, limit: $limit) {
       id
       text
       createdAt
@@ -36,7 +36,7 @@ const Landing = ({ session }) => (
   <Fragment>
     <h2>Feed</h2>
     {session && session.currentAuthor && <TweetCreate />}
-    <Tweets />
+    <Tweets limit={2} />
   </Fragment>
 );
 
@@ -81,9 +81,12 @@ class TweetCreate extends Component {
   }
 }
 
-const Tweets = () => (
-  <Query query={GET_TWEETS_WITH_AUTHORS}>
-    {({ data, loading, error }) => {
+const Tweets = ({ limit }) => (
+  <Query
+    query={GET_TWEETS_WITH_AUTHORS}
+    variables={{ offset: 0, limit }}
+  >
+    {({ data, loading, error, fetchMore }) => {
       const { tweets } = data;
 
       if (loading || !tweets) {
@@ -99,6 +102,33 @@ const Tweets = () => (
               <p>{tweet.text}</p>
             </div>
           ))}
+
+          <button
+            type="button"
+            onClick={() =>
+              fetchMore({
+                variables: { offset: tweets.length, limit },
+                updateQuery: (
+                  previousResult,
+                  { fetchMoreResult },
+                ) => {
+                  if (!fetchMoreResult) {
+                    return previousResult;
+                  }
+
+                  return {
+                    ...previousResult,
+                    tweets: [
+                      ...previousResult.tweets,
+                      ...fetchMoreResult.tweets,
+                    ],
+                  };
+                },
+              })
+            }
+          >
+            More
+          </button>
         </div>
       );
     }}
