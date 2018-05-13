@@ -21,12 +21,17 @@ const CREATE_TWEET = gql`
 const GET_TWEETS_WITH_AUTHORS = gql`
   query($offset: Int!, $limit: Int!) {
     tweets(order: "DESC", offset: $offset, limit: $limit) {
-      id
-      text
-      createdAt
-      author {
+      list {
         id
-        username
+        text
+        createdAt
+        author {
+          id
+          username
+        }
+      }
+      pageInfo {
+        hasNextPage
       }
     }
   }
@@ -93,9 +98,11 @@ const Tweets = ({ limit }) => (
         return <div>Loading ...</div>;
       }
 
+      const { list, pageInfo } = tweets;
+
       return (
         <div>
-          {tweets.map(tweet => (
+          {list.map(tweet => (
             <div key={tweet.id}>
               <h3>{tweet.author.username}</h3>
               <small>{tweet.createdAt}</small>
@@ -103,32 +110,36 @@ const Tweets = ({ limit }) => (
             </div>
           ))}
 
-          <button
-            type="button"
-            onClick={() =>
-              fetchMore({
-                variables: { offset: tweets.length, limit },
-                updateQuery: (
-                  previousResult,
-                  { fetchMoreResult },
-                ) => {
-                  if (!fetchMoreResult) {
-                    return previousResult;
-                  }
+          {pageInfo.hasNextPage && (
+            <button
+              type="button"
+              onClick={() =>
+                fetchMore({
+                  variables: { offset: list.length, limit },
+                  updateQuery: (
+                    previousResult,
+                    { fetchMoreResult },
+                  ) => {
+                    if (!fetchMoreResult) {
+                      return previousResult;
+                    }
 
-                  return {
-                    ...previousResult,
-                    tweets: [
-                      ...previousResult.tweets,
-                      ...fetchMoreResult.tweets,
-                    ],
-                  };
-                },
-              })
-            }
-          >
-            More
-          </button>
+                    return {
+                      tweets: {
+                        ...fetchMoreResult.tweets,
+                        list: [
+                          ...previousResult.tweets.list,
+                          ...fetchMoreResult.tweets.list,
+                        ],
+                      },
+                    };
+                  },
+                })
+              }
+            >
+              More
+            </button>
+          )}
         </div>
       );
     }}

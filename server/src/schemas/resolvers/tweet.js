@@ -8,12 +8,23 @@ export default {
       parent,
       { order = 'DESC', offset, limit },
       { models },
-    ) =>
-      await models.Tweet.findAll({
+    ) => {
+      const tweets = await models.Tweet.findAll({
         order: [['createdAt', order]],
         offset,
-        limit,
-      }),
+        limit: limit + 1,
+      });
+
+      const hasNextPage = tweets.length > limit;
+      const list = hasNextPage ? tweets.slice(0, -1) : tweets;
+
+      return {
+        list,
+        pageInfo: {
+          hasNextPage,
+        },
+      };
+    },
 
     tweet: async (parent, { id }, { models }) =>
       await models.Tweet.findById(id),
