@@ -3,24 +3,45 @@ import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import withSession from '../Session/withSession';
+import ErrorMessage from '../Error';
 
 const CREATE_TWEET = gql`
   mutation($text: String!) {
     createTweet(text: $text) {
       id
-      authorId
+      text
+      createdAt
       author {
         id
         username
       }
-      text
     }
   }
 `;
 
-const GET_TWEETS_WITH_AUTHORS = gql`
+const GET_PAGINATED_TWEETS_WITH_AUTHORS = gql`
   query($offset: Int!, $limit: Int!) {
-    tweets(order: "DESC", offset: $offset, limit: $limit) {
+    tweets(order: "DESC", offset: $offset, limit: $limit)
+      @connection(key: "TweetsConnection") {
+      list {
+        id
+        text
+        createdAt
+        author {
+          id
+          username
+        }
+      }
+      pageInfo {
+        hasNextPage
+      }
+    }
+  }
+`;
+
+const GET_ALL_TWEETS_WITH_AUTHORS = gql`
+  query {
+    tweets(order: "DESC") @connection(key: "TweetsConnection") {
       list {
         id
         text
@@ -68,7 +89,27 @@ class TweetCreate extends Component {
     const { text } = this.state;
 
     return (
-      <Mutation mutation={CREATE_TWEET} variables={{ text }}>
+      <Mutation
+        mutation={CREATE_TWEET}
+        variables={{ text }}
+        update={(cache, { data: { createTweet } }) => {
+          const data = cache.readQuery({
+            query: GET_ALL_TWEETS_WITH_AUTHORS,
+          });
+
+          cache.writeQuery({
+            query: GET_ALL_TWEETS_WITH_AUTHORS,
+            data: {
+              ...data,
+              tweets: {
+                ...data.tweets,
+                list: [createTweet, ...data.tweets.list],
+                pageInfo: data.tweets.pageInfo,
+              },
+            },
+          });
+        }}
+      >
         {(createTweet, { data, loading, error }) => (
           <form onSubmit={event => this.onSubmit(event, createTweet)}>
             <textarea
@@ -79,6 +120,8 @@ class TweetCreate extends Component {
               placeholder="Your tweet ..."
             />
             <button type="submit">Send</button>
+
+            {error && <ErrorMessage error={error} />}
           </form>
         )}
       </Mutation>
@@ -88,7 +131,7 @@ class TweetCreate extends Component {
 
 const Tweets = ({ limit }) => (
   <Query
-    query={GET_TWEETS_WITH_AUTHORS}
+    query={GET_PAGINATED_TWEETS_WITH_AUTHORS}
     variables={{ offset: 0, limit }}
   >
     {({ data, loading, error, fetchMore }) => {
