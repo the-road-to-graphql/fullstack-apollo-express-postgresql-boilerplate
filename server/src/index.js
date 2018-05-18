@@ -20,7 +20,8 @@ const app = express();
 app.use(cors());
 
 app.use(async (req, res, next) => {
-  const token = req.headers['x-token'];
+  const header = req.headers['x-token'] || '';
+  const token = header.replace('Bearer ', '');
 
   if (token) {
     try {
