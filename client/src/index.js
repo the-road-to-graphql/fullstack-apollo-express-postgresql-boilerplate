@@ -19,7 +19,7 @@ const authLink = new ApolloLink((operation, forward) => {
   operation.setContext(({ headers = {} }) => ({
     headers: {
       ...headers,
-      'x-token': `Bearer ${localStorage.getItem('token')}`,
+      'x-token': `${localStorage.getItem('token')}`,
     },
   }));
 
