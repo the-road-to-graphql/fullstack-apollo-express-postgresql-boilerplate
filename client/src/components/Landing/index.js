@@ -68,7 +68,7 @@ const Landing = ({ session }) => (
   <Fragment>
     <h2>Feed</h2>
     {session && session.currentAuthor && <TweetCreate />}
-    <Tweets limit={2} />
+    <Tweets currentAuthor={session.currentAuthor} limit={2} />
   </Fragment>
 );
 
@@ -135,7 +135,7 @@ class TweetCreate extends Component {
   }
 }
 
-const Tweets = ({ limit }) => (
+const Tweets = ({ limit, currentAuthor }) => (
   <Query
     query={GET_PAGINATED_TWEETS_WITH_AUTHORS}
     variables={{ offset: 0, limit }}
@@ -157,35 +157,38 @@ const Tweets = ({ limit }) => (
               <small>{tweet.createdAt}</small>
               <p>{tweet.text}</p>
 
-              <Mutation
-                mutation={DELETE_TWEET}
-                variables={{ id: tweet.id }}
-                update={cache => {
-                  const data = cache.readQuery({
-                    query: GET_ALL_TWEETS_WITH_AUTHORS,
-                  });
+              {currentAuthor &&
+                tweet.author.id === currentAuthor.id && (
+                  <Mutation
+                    mutation={DELETE_TWEET}
+                    variables={{ id: tweet.id }}
+                    update={cache => {
+                      const data = cache.readQuery({
+                        query: GET_ALL_TWEETS_WITH_AUTHORS,
+                      });
 
-                  cache.writeQuery({
-                    query: GET_ALL_TWEETS_WITH_AUTHORS,
-                    data: {
-                      ...data,
-                      tweets: {
-                        ...data.tweets,
-                        list: data.tweets.list.filter(
-                          node => node.id !== tweet.id,
-                        ),
-                        pageInfo: data.tweets.pageInfo,
-                      },
-                    },
-                  });
-                }}
-              >
-                {(deleteTweet, { data, loading, error }) => (
-                  <button type="button" onClick={deleteTweet}>
-                    Delete
-                  </button>
+                      cache.writeQuery({
+                        query: GET_ALL_TWEETS_WITH_AUTHORS,
+                        data: {
+                          ...data,
+                          tweets: {
+                            ...data.tweets,
+                            list: data.tweets.list.filter(
+                              node => node.id !== tweet.id,
+                            ),
+                            pageInfo: data.tweets.pageInfo,
+                          },
+                        },
+                      });
+                    }}
+                  >
+                    {(deleteTweet, { data, loading, error }) => (
+                      <button type="button" onClick={deleteTweet}>
+                        Delete
+                      </button>
+                    )}
+                  </Mutation>
                 )}
-              </Mutation>
             </div>
           ))}
 
