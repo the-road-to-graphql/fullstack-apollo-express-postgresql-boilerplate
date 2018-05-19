@@ -1,6 +1,7 @@
 import { combineResolvers } from 'graphql-resolvers';
 
 import isAuthenticated from './authentication';
+import { isTweetOwner } from './authorization';
 
 export default {
   Query: {
@@ -42,6 +43,7 @@ export default {
 
     deleteTweet: combineResolvers(
       isAuthenticated,
+      isTweetOwner,
       async (parent, { id }, { models }) =>
         await models.Tweet.destroy({ where: { id } }),
     ),

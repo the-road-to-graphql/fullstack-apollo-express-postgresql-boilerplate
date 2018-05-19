@@ -7,3 +7,17 @@ export const isAdmin = combineResolvers(
   (parent, args, { currentUser: { role } }) =>
     role === 'admin' ? skip : new Error('NOT_AUTHORIZED_AS_ADMIN'),
 );
+
+export const isTweetOwner = async (
+  parent,
+  { id },
+  { models, currentUser },
+) => {
+  const tweet = await models.Tweet.findById(id, { raw: true });
+
+  if (tweet.authorId !== currentUser.id) {
+    throw new Error('NOT_AUTHORIZED_AS_OWNER');
+  }
+
+  return skip;
+};

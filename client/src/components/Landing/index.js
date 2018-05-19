@@ -19,6 +19,12 @@ const CREATE_TWEET = gql`
   }
 `;
 
+const DELETE_TWEET = gql`
+  mutation($id: String!) {
+    deleteTweet(id: $id)
+  }
+`;
+
 const GET_PAGINATED_TWEETS_WITH_AUTHORS = gql`
   query($offset: Int!, $limit: Int!) {
     tweets(order: "DESC", offset: $offset, limit: $limit)
@@ -150,6 +156,36 @@ const Tweets = ({ limit }) => (
               <h3>{tweet.author.username}</h3>
               <small>{tweet.createdAt}</small>
               <p>{tweet.text}</p>
+
+              <Mutation
+                mutation={DELETE_TWEET}
+                variables={{ id: tweet.id }}
+                update={cache => {
+                  const data = cache.readQuery({
+                    query: GET_ALL_TWEETS_WITH_AUTHORS,
+                  });
+
+                  cache.writeQuery({
+                    query: GET_ALL_TWEETS_WITH_AUTHORS,
+                    data: {
+                      ...data,
+                      tweets: {
+                        ...data.tweets,
+                        list: data.tweets.list.filter(
+                          node => node.id !== tweet.id,
+                        ),
+                        pageInfo: data.tweets.pageInfo,
+                      },
+                    },
+                  });
+                }}
+              >
+                {(deleteTweet, { data, loading, error }) => (
+                  <button type="button" onClick={deleteTweet}>
+                    Delete
+                  </button>
+                )}
+              </Mutation>
             </div>
           ))}
 
