@@ -5,6 +5,22 @@ import gql from 'graphql-tag';
 import withSession from '../Session/withSession';
 import ErrorMessage from '../Error';
 
+const TWEET_CREATED = gql`
+  subscription {
+    tweetCreated {
+      tweet {
+        id
+        text
+        createdAt
+        author {
+          id
+          username
+        }
+      }
+    }
+  }
+`;
+
 const CREATE_TWEET = gql`
   mutation($text: String!) {
     createTweet(text: $text) {
@@ -99,23 +115,23 @@ class TweetCreate extends Component {
       <Mutation
         mutation={CREATE_TWEET}
         variables={{ text }}
-        update={(cache, { data: { createTweet } }) => {
-          const data = cache.readQuery({
-            query: GET_ALL_TWEETS_WITH_AUTHORS,
-          });
+        // update={(cache, { data: { createTweet } }) => {
+        //   const data = cache.readQuery({
+        //     query: GET_ALL_TWEETS_WITH_AUTHORS,
+        //   });
 
-          cache.writeQuery({
-            query: GET_ALL_TWEETS_WITH_AUTHORS,
-            data: {
-              ...data,
-              tweets: {
-                ...data.tweets,
-                list: [createTweet, ...data.tweets.list],
-                pageInfo: data.tweets.pageInfo,
-              },
-            },
-          });
-        }}
+        //   cache.writeQuery({
+        //     query: GET_ALL_TWEETS_WITH_AUTHORS,
+        //     data: {
+        //       ...data,
+        //       tweets: {
+        //         ...data.tweets,
+        //         list: [createTweet, ...data.tweets.list],
+        //         pageInfo: data.tweets.pageInfo,
+        //       },
+        //     },
+        //   });
+        // }}
       >
         {(createTweet, { data, loading, error }) => (
           <form onSubmit={event => this.onSubmit(event, createTweet)}>
@@ -141,7 +157,7 @@ const Tweets = ({ limit, currentAuthor }) => (
     query={GET_PAGINATED_TWEETS_WITH_AUTHORS}
     variables={{ limit }}
   >
-    {({ data, loading, error, fetchMore }) => {
+    {({ data, loading, error, fetchMore, subscribeToMore }) => {
       const { tweets } = data;
 
       if (loading || !tweets) {
@@ -151,47 +167,37 @@ const Tweets = ({ limit, currentAuthor }) => (
       const { list, pageInfo } = tweets;
 
       return (
-        <div>
-          {list.map(tweet => (
-            <div key={tweet.id}>
-              <h3>{tweet.author.username}</h3>
-              <small>{tweet.createdAt}</small>
-              <p>{tweet.text}</p>
+        <Fragment>
+          <TweetList
+            tweets={list}
+            currentAuthor={currentAuthor}
+            subscribeToCreatedTweets={() =>
+              subscribeToMore({
+                document: TWEET_CREATED,
+                updateQuery: (
+                  previousResult,
+                  { subscriptionData },
+                ) => {
+                  if (!subscriptionData.data) {
+                    return previousResult;
+                  }
 
-              {currentAuthor &&
-                tweet.author.id === currentAuthor.id && (
-                  <Mutation
-                    mutation={DELETE_TWEET}
-                    variables={{ id: tweet.id }}
-                    update={cache => {
-                      const data = cache.readQuery({
-                        query: GET_ALL_TWEETS_WITH_AUTHORS,
-                      });
+                  const { tweetCreated } = subscriptionData.data;
 
-                      cache.writeQuery({
-                        query: GET_ALL_TWEETS_WITH_AUTHORS,
-                        data: {
-                          ...data,
-                          tweets: {
-                            ...data.tweets,
-                            list: data.tweets.list.filter(
-                              node => node.id !== tweet.id,
-                            ),
-                            pageInfo: data.tweets.pageInfo,
-                          },
-                        },
-                      });
-                    }}
-                  >
-                    {(deleteTweet, { data, loading, error }) => (
-                      <button type="button" onClick={deleteTweet}>
-                        Delete
-                      </button>
-                    )}
-                  </Mutation>
-                )}
-            </div>
-          ))}
+                  return {
+                    ...previousResult,
+                    tweets: {
+                      ...previousResult.tweets,
+                      list: [
+                        tweetCreated.tweet,
+                        ...previousResult.tweets.list,
+                      ],
+                    },
+                  };
+                },
+              })
+            }
+          />
 
           {pageInfo.hasNextPage && (
             <button
@@ -226,10 +232,65 @@ const Tweets = ({ limit, currentAuthor }) => (
               More
             </button>
           )}
-        </div>
+        </Fragment>
       );
     }}
   </Query>
 );
+
+class TweetList extends Component {
+  componentDidMount() {
+    this.props.subscribeToCreatedTweets();
+  }
+
+  render() {
+    const { tweets, currentAuthor } = this.props;
+
+    return (
+      <Fragment>
+        {tweets.map(tweet => (
+          <div key={tweet.id}>
+            <h3>{tweet.author.username}</h3>
+            <small>{tweet.createdAt}</small>
+            <p>{tweet.text}</p>
+
+            {currentAuthor &&
+              tweet.author.id === currentAuthor.id && (
+                <Mutation
+                  mutation={DELETE_TWEET}
+                  variables={{ id: tweet.id }}
+                  update={cache => {
+                    const data = cache.readQuery({
+                      query: GET_ALL_TWEETS_WITH_AUTHORS,
+                    });
+
+                    cache.writeQuery({
+                      query: GET_ALL_TWEETS_WITH_AUTHORS,
+                      data: {
+                        ...data,
+                        tweets: {
+                          ...data.tweets,
+                          list: data.tweets.list.filter(
+                            node => node.id !== tweet.id,
+                          ),
+                          pageInfo: data.tweets.pageInfo,
+                        },
+                      },
+                    });
+                  }}
+                >
+                  {(deleteTweet, { data, loading, error }) => (
+                    <button type="button" onClick={deleteTweet}>
+                      Delete
+                    </button>
+                  )}
+                </Mutation>
+              )}
+          </div>
+        ))}
+      </Fragment>
+    );
+  }
+}
 
 export default withSession(Landing);
