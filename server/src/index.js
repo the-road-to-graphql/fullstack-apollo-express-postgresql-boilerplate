@@ -50,55 +50,54 @@ app.use(
 
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 
-sequelize.sync({ force: false }).then(async () => {
-  app.listen(8000, () => {
-    console.log('Go to http://localhost:8000/graphiql for GraphiQL');
+sequelize.sync({ force: true }).then(async () => {
+  const date = new Date();
+
+  const createPromiseOne = models.Author.create(
+    {
+      username: 'rwieruch',
+      email: 'robin@wieruch.com',
+      password: 'robin@wieruch',
+      role: 'ADMIN',
+      tweets: [
+        {
+          text:
+            'Published the next edition of the Road to learn React',
+          createdAt: date.setSeconds(date.getSeconds() + 1),
+        },
+      ],
+    },
+    {
+      include: [models.Tweet],
+    },
+  );
+
+  const createPromiseTwo = models.Author.create(
+    {
+      username: 'ddavids',
+      email: 'dave@davids.com',
+      password: 'dave@davids',
+      tweets: [
+        {
+          text: 'Happy to release a GraphQL in React tutorial',
+          createdAt: date.setSeconds(date.getSeconds() + 1),
+        },
+        {
+          text: 'A complete React with Apollo and GraphQL Tutorial',
+          createdAt: date.setSeconds(date.getSeconds() + 1),
+        },
+      ],
+    },
+    {
+      include: [models.Tweet],
+    },
+  );
+
+  Promise.all([createPromiseOne, createPromiseTwo]).then(() => {
+    app.listen(8000, () => {
+      console.log(
+        'Go to http://localhost:8000/graphiql for GraphiQL',
+      );
+    });
   });
 });
-
-// sequelize.sync({ force: true }).then(async () => {
-//   const createPromiseOne = models.Author.create(
-//     {
-//       username: 'rwieruch',
-//       email: 'robin@wieruch.com',
-//       password: 'robin@wieruch',
-//       role: 'ADMIN',
-//       tweets: [
-//         {
-//           text:
-//             'Published the next edition of the Road to learn React',
-//         },
-//         {
-//           text: 'A complete React with Apollo and GraphQL Tutorial',
-//         },
-//       ],
-//     },
-//     {
-//       include: [models.Tweet],
-//     },
-//   );
-
-//   const createPromiseTwo = models.Author.create(
-//     {
-//       username: 'ddavids',
-//       email: 'dave@davids.com',
-//       password: 'dave@davids',
-//       tweets: [
-//         {
-//           text: 'Happy to release a GraphQL in React tutorial',
-//         },
-//       ],
-//     },
-//     {
-//       include: [models.Tweet],
-//     },
-//   );
-
-//   Promise.all([createPromiseOne, createPromiseTwo]).then(() => {
-//     app.listen(8000, () => {
-//       console.log(
-//         'Go to http://localhost:8000/graphiql for GraphiQL',
-//       );
-//     });
-//   });
-// });
