@@ -4,6 +4,11 @@ import { combineResolvers } from 'graphql-resolvers';
 import isAuthenticated from './authentication';
 import { isTweetOwner } from './authorization';
 
+const toCursorHash = string => Buffer.from(string).toString('base64');
+
+const fromCursorHash = string =>
+  Buffer.from(string, 'base64').toString('ascii');
+
 export default {
   Query: {
     tweets: async (parent, { cursor, limit = 100 }, { models }) => {
@@ -11,7 +16,7 @@ export default {
         ? {
             where: {
               createdAt: {
-                [Sequelize.Op.lt]: cursor,
+                [Sequelize.Op.lt]: fromCursorHash(cursor),
               },
             },
           }
@@ -30,6 +35,9 @@ export default {
         list,
         pageInfo: {
           hasNextPage,
+          endCursor: toCursorHash(
+            list[list.length - 1].createdAt.toString(),
+          ),
         },
       };
     },

@@ -40,6 +40,7 @@ const GET_PAGINATED_TWEETS_WITH_AUTHORS = gql`
       }
       pageInfo {
         hasNextPage
+        endCursor
       }
     }
   }
@@ -198,7 +199,7 @@ const Tweets = ({ limit, currentAuthor }) => (
               onClick={() =>
                 fetchMore({
                   variables: {
-                    cursor: list[list.length - 1].createdAt,
+                    cursor: pageInfo.endCursor,
                     limit,
                   },
                   updateQuery: (

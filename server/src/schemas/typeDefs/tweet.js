@@ -16,6 +16,7 @@ export default `
 
   type PageInfo {
     hasNextPage: Boolean!
+    endCursor: String!
   }
 
   type Tweet {
