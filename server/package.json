@@ -18,10 +18,12 @@
     "express": "^4.16.3",
     "graphql": "^0.13.2",
     "graphql-resolvers": "^0.2.2",
+    "graphql-subscriptions": "^0.5.8",
     "graphql-tools": "^3.0.0",
     "jsonwebtoken": "^8.2.1",
     "pg": "^7.4.2",
-    "sequelize": "^4.37.7"
+    "sequelize": "^4.37.7",
+    "subscriptions-transport-ws": "^0.9.9"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

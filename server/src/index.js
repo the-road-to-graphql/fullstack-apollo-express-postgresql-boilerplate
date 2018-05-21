@@ -10,6 +10,10 @@ import {
   graphiqlExpress,
 } from 'apollo-server-express';
 
+import { execute, subscribe } from 'graphql';
+import { createServer } from 'http';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+
 import schema from './schemas';
 import models, { sequelize } from './models';
 
@@ -48,7 +52,15 @@ app.use(
   })),
 );
 
-app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+app.use(
+  '/graphiql',
+  graphiqlExpress({
+    endpointURL: '/graphql',
+    subscriptionsEndpoint: `ws://localhost:8000/subscriptions`,
+  }),
+);
+
+const server = createServer(app);
 
 sequelize.sync({ force: true }).then(async () => {
   const date = new Date();
@@ -94,9 +106,21 @@ sequelize.sync({ force: true }).then(async () => {
   );
 
   Promise.all([createPromiseOne, createPromiseTwo]).then(() => {
-    app.listen(8000, () => {
+    server.listen(8000, () => {
       console.log(
-        'Go to http://localhost:8000/graphiql for GraphiQL',
+        `Apollo Server is now running on http://localhost:8000`,
+      );
+
+      new SubscriptionServer(
+        {
+          execute,
+          subscribe,
+          schema,
+        },
+        {
+          server,
+          path: '/subscriptions',
+        },
       );
     });
   });

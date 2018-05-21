@@ -14,6 +14,10 @@ const linkTypeDefs = `
   type Mutation {
     _: Boolean
   }
+
+  type Subscription {
+    _: Boolean
+  }
 `;
 
 const schema = makeExecutableSchema({

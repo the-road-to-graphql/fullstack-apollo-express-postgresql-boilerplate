@@ -68,4 +68,9 @@ export default {
     author: async (tweet, args, { models }) =>
       await models.Author.findById(tweet.authorId),
   },
+  Subscription: {
+    tweetCreated: {
+      subscribe: () => pubsub.asyncIterator('commentAdded'),
+    },
+  },
 };

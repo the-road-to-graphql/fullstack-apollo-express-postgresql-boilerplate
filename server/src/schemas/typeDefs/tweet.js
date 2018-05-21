@@ -26,4 +26,8 @@ export default `
     text: String!
     createdAt: String!
   }
+
+  extend type Subscription {
+    tweetCreated(id: String!): Tweet!
+  }
 `;
