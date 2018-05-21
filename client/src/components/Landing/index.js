@@ -26,8 +26,8 @@ const DELETE_TWEET = gql`
 `;
 
 const GET_PAGINATED_TWEETS_WITH_AUTHORS = gql`
-  query($offset: Int!, $limit: Int!) {
-    tweets(order: "DESC", offset: $offset, limit: $limit)
+  query($cursor: String, $limit: Int!) {
+    tweets(cursor: $cursor, limit: $limit)
       @connection(key: "TweetsConnection") {
       list {
         id
@@ -138,7 +138,7 @@ class TweetCreate extends Component {
 const Tweets = ({ limit, currentAuthor }) => (
   <Query
     query={GET_PAGINATED_TWEETS_WITH_AUTHORS}
-    variables={{ offset: 0, limit }}
+    variables={{ limit }}
   >
     {({ data, loading, error, fetchMore }) => {
       const { tweets } = data;
@@ -197,7 +197,10 @@ const Tweets = ({ limit, currentAuthor }) => (
               type="button"
               onClick={() =>
                 fetchMore({
-                  variables: { offset: list.length, limit },
+                  variables: {
+                    cursor: list[list.length - 1].createdAt,
+                    limit,
+                  },
                   updateQuery: (
                     previousResult,
                     { fetchMoreResult },

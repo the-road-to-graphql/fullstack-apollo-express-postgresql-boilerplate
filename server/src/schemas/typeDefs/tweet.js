@@ -1,6 +1,6 @@
 export default `
   extend type Query {
-    tweets(order: String, offset: Int, limit: Int): TweetConnection!
+    tweets(cursor: String, limit: Int): TweetConnection!
     tweet(id: String!): Tweet!
   }
 

@@ -1,3 +1,4 @@
+import Sequelize from 'sequelize';
 import { combineResolvers } from 'graphql-resolvers';
 
 import isAuthenticated from './authentication';
@@ -5,15 +6,21 @@ import { isTweetOwner } from './authorization';
 
 export default {
   Query: {
-    tweets: async (
-      parent,
-      { order = 'DESC', offset, limit },
-      { models },
-    ) => {
+    tweets: async (parent, { cursor, limit = 100 }, { models }) => {
+      const cursorOptions = cursor
+        ? {
+            where: {
+              createdAt: {
+                [Sequelize.Op.lt]: cursor,
+              },
+            },
+          }
+        : {};
+
       const tweets = await models.Tweet.findAll({
-        order: [['createdAt', order]],
-        offset,
+        order: [['createdAt', 'DESC']],
         limit: limit + 1,
+        ...cursorOptions,
       });
 
       const hasNextPage = tweets.length > limit;
