@@ -28,6 +28,10 @@ export default `
   }
 
   extend type Subscription {
-    tweetCreated(id: String!): Tweet!
+    tweetCreated: TweetCreated!
+  }
+
+  type TweetCreated {
+    tweet: Tweet!
   }
 `;

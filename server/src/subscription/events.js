@@ -1,0 +1,1 @@
+export const TWEET_CREATED = 'TWEET_CREATED';

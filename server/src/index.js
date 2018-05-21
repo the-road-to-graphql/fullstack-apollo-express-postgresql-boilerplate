@@ -116,6 +116,9 @@ sequelize.sync({ force: true }).then(async () => {
           execute,
           subscribe,
           schema,
+          onOperation: (message, params, webSocket) => {
+            return { ...params, context: { models } };
+          },
         },
         {
           server,

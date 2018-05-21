@@ -4,6 +4,8 @@ import { combineResolvers } from 'graphql-resolvers';
 import isAuthenticated from './authentication';
 import { isTweetOwner } from './authorization';
 
+import pubsub, { EVENTS } from '../../subscription';
+
 const toCursorHash = string => Buffer.from(string).toString('base64');
 
 const fromCursorHash = string =>
@@ -49,11 +51,16 @@ export default {
   Mutation: {
     createTweet: combineResolvers(
       isAuthenticated,
-      async (parent, { text }, { models, currentUser }) =>
-        await models.Tweet.create({
+      async (parent, { text }, { models, currentUser }) => {
+        const tweet = await models.Tweet.create({
           text,
           authorId: currentUser.id,
-        }),
+        });
+
+        pubsub.publish(EVENTS.TWEET_CREATED, tweet);
+
+        return tweet;
+      },
     ),
 
     deleteTweet: combineResolvers(
@@ -68,9 +75,23 @@ export default {
     author: async (tweet, args, { models }) =>
       await models.Author.findById(tweet.authorId),
   },
+
   Subscription: {
     tweetCreated: {
-      subscribe: () => pubsub.asyncIterator('commentAdded'),
+      resolve: async (tweetCreated, args, { models }) => {
+        const tweet = tweetCreated.get({ raw: true });
+        const author = await models.Author.findById(tweet.authorId, {
+          raw: true,
+        });
+
+        return {
+          tweet: {
+            ...tweet,
+            author,
+          },
+        };
+      },
+      subscribe: () => pubsub.asyncIterator(EVENTS.TWEET_CREATED),
     },
   },
 };
