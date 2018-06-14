@@ -18,6 +18,7 @@ import DataLoader from 'dataloader';
 
 import schema from './schema';
 import models, { sequelize } from './models';
+import { batchUsers } from './loaders';
 
 dotenv.config();
 
@@ -40,15 +41,6 @@ app.use(async (req, res, next) => {
 
   next();
 });
-
-const batchUsers = async (keys, models) =>
-  await models.User.findAll({
-    where: {
-      id: {
-        $in: keys,
-      },
-    },
-  });
 
 app.use(
   '/graphql',
