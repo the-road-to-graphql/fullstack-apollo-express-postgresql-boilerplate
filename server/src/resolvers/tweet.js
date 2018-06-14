@@ -72,8 +72,8 @@ export default {
   },
 
   Tweet: {
-    user: async (tweet, args, { models }) =>
-      await models.User.findById(tweet.userId),
+    user: async (tweet, args, { userLoader }) =>
+      await userLoader.load(tweet.userId),
   },
 
   Subscription: {

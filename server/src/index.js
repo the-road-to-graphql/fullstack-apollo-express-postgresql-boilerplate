@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
-
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+
 import jwt from 'jsonwebtoken';
 
 import {
@@ -13,6 +13,8 @@ import {
 import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
+
+import DataLoader from 'dataloader';
 
 import schema from './schema';
 import models, { sequelize } from './models';
@@ -39,6 +41,15 @@ app.use(async (req, res, next) => {
   next();
 });
 
+const batchUsers = async (keys, models) =>
+  await models.User.findAll({
+    where: {
+      id: {
+        $in: keys,
+      },
+    },
+  });
+
 app.use(
   '/graphql',
   bodyParser.json(),
@@ -48,6 +59,7 @@ app.use(
       models,
       secret: process.env.SECRET,
       currentUser,
+      userLoader: new DataLoader(keys => batchUsers(keys, models)),
     },
   })),
 );
