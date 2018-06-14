@@ -26,7 +26,9 @@ const NavigationAuth = ({ session }) => (
       session.currentUser &&
       session.currentUser.role === 'ADMIN' && (
         <li>
-          <Link to={routes.ADMIN}>Admin</Link>
+          <Link to={routes.ADMIN}>
+            Admin ({session.currentUser.username})
+          </Link>
         </li>
       )}
     <li>
