@@ -68,13 +68,12 @@ sequelize.sync({ force: true }).then(async () => {
   const createPromiseOne = models.Author.create(
     {
       username: 'rwieruch',
-      email: 'robin@wieruch.com',
-      password: 'robin@wieruch',
+      email: 'hello@robin.com',
+      password: 'rwieruch',
       role: 'ADMIN',
       tweets: [
         {
-          text:
-            'Published the next edition of the Road to learn React',
+          text: 'Published the Road to learn React',
           createdAt: date.setSeconds(date.getSeconds() + 1),
         },
       ],
@@ -87,8 +86,8 @@ sequelize.sync({ force: true }).then(async () => {
   const createPromiseTwo = models.Author.create(
     {
       username: 'ddavids',
-      email: 'dave@davids.com',
-      password: 'dave@davids',
+      email: 'hello@david.com',
+      password: 'ddavids',
       tweets: [
         {
           text: 'Happy to release a GraphQL in React tutorial',
