@@ -84,8 +84,8 @@ const GET_ALL_TWEETS_WITH_USERS = gql`
 const Landing = ({ session }) => (
   <Fragment>
     <h2>Feed</h2>
-    {session && session.currentAuthor && <TweetCreate />}
-    <Tweets currentAuthor={session.currentAuthor} limit={2} />
+    {session && session.currentUser && <TweetCreate />}
+    <Tweets currentUser={session.currentUser} limit={2} />
   </Fragment>
 );
 
@@ -152,7 +152,7 @@ class TweetCreate extends Component {
   }
 }
 
-const Tweets = ({ limit, currentAuthor }) => (
+const Tweets = ({ limit, currentUser }) => (
   <Query
     query={GET_PAGINATED_TWEETS_WITH_USERS}
     variables={{ limit }}
@@ -170,7 +170,7 @@ const Tweets = ({ limit, currentAuthor }) => (
         <Fragment>
           <TweetList
             tweets={list}
-            currentAuthor={currentAuthor}
+            currentUser={currentUser}
             subscribeToCreatedTweets={() =>
               subscribeToMore({
                 document: TWEET_CREATED,
@@ -244,7 +244,7 @@ class TweetList extends Component {
   }
 
   render() {
-    const { tweets, currentAuthor } = this.props;
+    const { tweets, currentUser } = this.props;
 
     return (
       <Fragment>
@@ -254,8 +254,8 @@ class TweetList extends Component {
             <small>{tweet.createdAt}</small>
             <p>{tweet.text}</p>
 
-            {currentAuthor &&
-              tweet.user.id === currentAuthor.id && (
+            {currentUser &&
+              tweet.user.id === currentUser.id && (
                 <Mutation
                   mutation={DELETE_TWEET}
                   variables={{ id: tweet.id }}
