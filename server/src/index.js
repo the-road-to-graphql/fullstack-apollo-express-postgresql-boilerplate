@@ -14,7 +14,7 @@ import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 
-import schema from './schemas';
+import schema from './schema';
 import models, { sequelize } from './models';
 
 dotenv.config();
@@ -65,7 +65,7 @@ const server = createServer(app);
 sequelize.sync({ force: true }).then(async () => {
   const date = new Date();
 
-  const createPromiseOne = models.Author.create(
+  const createPromiseOne = models.User.create(
     {
       username: 'rwieruch',
       email: 'hello@robin.com',
@@ -83,7 +83,7 @@ sequelize.sync({ force: true }).then(async () => {
     },
   );
 
-  const createPromiseTwo = models.Author.create(
+  const createPromiseTwo = models.User.create(
     {
       username: 'ddavids',
       email: 'hello@david.com',

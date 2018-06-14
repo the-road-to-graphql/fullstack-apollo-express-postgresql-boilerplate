@@ -4,7 +4,7 @@ import { combineResolvers } from 'graphql-resolvers';
 import isAuthenticated from './authentication';
 import { isTweetOwner } from './authorization';
 
-import pubsub, { EVENTS } from '../../subscription';
+import pubsub, { EVENTS } from '../subscription';
 
 const toCursorHash = string => Buffer.from(string).toString('base64');
 
@@ -54,7 +54,7 @@ export default {
       async (parent, { text }, { models, currentUser }) => {
         const tweet = await models.Tweet.create({
           text,
-          authorId: currentUser.id,
+          userId: currentUser.id,
         });
 
         pubsub.publish(EVENTS.TWEET_CREATED, tweet);
@@ -72,22 +72,22 @@ export default {
   },
 
   Tweet: {
-    author: async (tweet, args, { models }) =>
-      await models.Author.findById(tweet.authorId),
+    user: async (tweet, args, { models }) =>
+      await models.User.findById(tweet.userId),
   },
 
   Subscription: {
     tweetCreated: {
       resolve: async (tweetCreated, args, { models }) => {
         const tweet = tweetCreated.get({ raw: true });
-        const author = await models.Author.findById(tweet.authorId, {
+        const user = await models.User.findById(tweet.userId, {
           raw: true,
         });
 
         return {
           tweet: {
             ...tweet,
-            author,
+            user,
           },
         };
       },

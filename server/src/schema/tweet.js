@@ -21,8 +21,8 @@ export default `
 
   type Tweet {
     id: String!
-    authorId: String!
-    author: Author!
+    userId: String!
+    user: User!
     text: String!
     createdAt: String!
   }

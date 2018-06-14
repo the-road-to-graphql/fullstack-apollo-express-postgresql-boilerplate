@@ -12,7 +12,7 @@ const TWEET_CREATED = gql`
         id
         text
         createdAt
-        author {
+        user {
           id
           username
         }
@@ -27,7 +27,7 @@ const CREATE_TWEET = gql`
       id
       text
       createdAt
-      author {
+      user {
         id
         username
       }
@@ -41,7 +41,7 @@ const DELETE_TWEET = gql`
   }
 `;
 
-const GET_PAGINATED_TWEETS_WITH_AUTHORS = gql`
+const GET_PAGINATED_TWEETS_WITH_USERS = gql`
   query($cursor: String, $limit: Int!) {
     tweets(cursor: $cursor, limit: $limit)
       @connection(key: "TweetsConnection") {
@@ -49,7 +49,7 @@ const GET_PAGINATED_TWEETS_WITH_AUTHORS = gql`
         id
         text
         createdAt
-        author {
+        user {
           id
           username
         }
@@ -62,14 +62,14 @@ const GET_PAGINATED_TWEETS_WITH_AUTHORS = gql`
   }
 `;
 
-const GET_ALL_TWEETS_WITH_AUTHORS = gql`
+const GET_ALL_TWEETS_WITH_USERS = gql`
   query {
     tweets(order: "DESC") @connection(key: "TweetsConnection") {
       list {
         id
         text
         createdAt
-        author {
+        user {
           id
           username
         }
@@ -117,11 +117,11 @@ class TweetCreate extends Component {
         variables={{ text }}
         // update={(cache, { data: { createTweet } }) => {
         //   const data = cache.readQuery({
-        //     query: GET_ALL_TWEETS_WITH_AUTHORS,
+        //     query: GET_ALL_TWEETS_WITH_USERS,
         //   });
 
         //   cache.writeQuery({
-        //     query: GET_ALL_TWEETS_WITH_AUTHORS,
+        //     query: GET_ALL_TWEETS_WITH_USERS,
         //     data: {
         //       ...data,
         //       tweets: {
@@ -154,7 +154,7 @@ class TweetCreate extends Component {
 
 const Tweets = ({ limit, currentAuthor }) => (
   <Query
-    query={GET_PAGINATED_TWEETS_WITH_AUTHORS}
+    query={GET_PAGINATED_TWEETS_WITH_USERS}
     variables={{ limit }}
   >
     {({ data, loading, error, fetchMore, subscribeToMore }) => {
@@ -250,22 +250,22 @@ class TweetList extends Component {
       <Fragment>
         {tweets.map(tweet => (
           <div key={tweet.id}>
-            <h3>{tweet.author.username}</h3>
+            <h3>{tweet.user.username}</h3>
             <small>{tweet.createdAt}</small>
             <p>{tweet.text}</p>
 
             {currentAuthor &&
-              tweet.author.id === currentAuthor.id && (
+              tweet.user.id === currentAuthor.id && (
                 <Mutation
                   mutation={DELETE_TWEET}
                   variables={{ id: tweet.id }}
                   update={cache => {
                     const data = cache.readQuery({
-                      query: GET_ALL_TWEETS_WITH_AUTHORS,
+                      query: GET_ALL_TWEETS_WITH_USERS,
                     });
 
                     cache.writeQuery({
-                      query: GET_ALL_TWEETS_WITH_AUTHORS,
+                      query: GET_ALL_TWEETS_WITH_USERS,
                       data: {
                         ...data,
                         tweets: {

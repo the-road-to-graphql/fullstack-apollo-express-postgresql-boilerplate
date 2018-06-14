@@ -5,7 +5,7 @@ const sequelize = new Sequelize('twitter', 'postgres', 'postgres', {
 });
 
 const models = {
-  Author: sequelize.import('./author'),
+  User: sequelize.import('./user'),
   Tweet: sequelize.import('./tweet'),
 };
 

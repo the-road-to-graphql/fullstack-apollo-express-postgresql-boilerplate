@@ -11,18 +11,18 @@ const createToken = async (user, secret, expiresIn) => {
 
 export default {
   Query: {
-    authors: async (parent, args, { models }) =>
-      await models.Author.findAll(),
+    users: async (parent, args, { models }) =>
+      await models.User.findAll(),
 
-    author: async (parent, { id }, { models }) =>
-      await models.Author.findById(id),
+    user: async (parent, { id }, { models }) =>
+      await models.User.findById(id),
 
-    currentAuthor: async (parent, args, { models, currentUser }) => {
+    currentUser: async (parent, args, { models, currentUser }) => {
       if (!currentUser) {
         return null;
       }
 
-      return await models.Author.findById(currentUser.id);
+      return await models.User.findById(currentUser.id);
     },
   },
 
@@ -32,7 +32,7 @@ export default {
       { username, email, password },
       { models, secret },
     ) => {
-      const user = await models.Author.create({
+      const user = await models.User.create({
         username,
         email,
         password,
@@ -46,7 +46,7 @@ export default {
       { login, password },
       { models, secret },
     ) => {
-      const user = await models.Author.findByLogin(login);
+      const user = await models.User.findByLogin(login);
 
       if (!user) {
         throw new Error('No user found with this login credentials.');
@@ -61,28 +61,28 @@ export default {
       return { token: createToken(user, secret, '30m') };
     },
 
-    updateAuthor: combineResolvers(
+    updateUser: combineResolvers(
       isAuthenticated,
       async (parent, { username }, { models, currentUser }) => {
-        const author = await models.Author.findById(currentUser.id);
-        return await author.update({ username });
+        const user = await models.User.findById(currentUser.id);
+        return await user.update({ username });
       },
     ),
 
-    deleteAuthor: combineResolvers(
+    deleteUser: combineResolvers(
       isAdmin,
       async (parent, { id }, { models }) =>
-        await models.Author.destroy({
+        await models.User.destroy({
           where: { id },
         }),
     ),
   },
 
-  Author: {
-    tweets: async (author, args, { models }) =>
+  User: {
+    tweets: async (user, args, { models }) =>
       await models.Tweet.findAll({
         where: {
-          authorId: author.id,
+          userId: user.id,
         },
       }),
   },

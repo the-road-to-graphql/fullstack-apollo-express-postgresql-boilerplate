@@ -9,5 +9,5 @@ const AccountPage = () => (
 );
 
 export default withAuthorization(
-  session => session && session.currentAuthor,
+  session => session && session.currentUser,
 )(AccountPage);

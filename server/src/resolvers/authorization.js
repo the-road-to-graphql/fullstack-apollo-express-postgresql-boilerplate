@@ -15,7 +15,7 @@ export const isTweetOwner = async (
 ) => {
   const tweet = await models.Tweet.findById(id, { raw: true });
 
-  if (tweet.authorId !== currentUser.id) {
+  if (tweet.userId !== currentUser.id) {
     throw new Error('NOT_AUTHORIZED_AS_OWNER');
   }
 

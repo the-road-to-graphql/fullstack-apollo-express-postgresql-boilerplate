@@ -3,10 +3,10 @@ import { Query } from 'react-apollo';
 import { Redirect } from 'react-router-dom';
 
 import * as routes from '../../constants/routes';
-import { GET_CURRENT_AUTHOR } from './queries';
+import { GET_CURRENT_USER } from './queries';
 
 const withAuthorization = conditionFn => Component => props => (
-  <Query query={GET_CURRENT_AUTHOR}>
+  <Query query={GET_CURRENT_USER}>
     {({ data }) =>
       conditionFn(data) ? (
         <Component {...props} />
