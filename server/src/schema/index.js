@@ -1,12 +1,9 @@
-import { makeExecutableSchema } from 'graphql-tools';
+import { gql } from 'apollo-server-express';
 
 import userSchema from './user';
 import tweetSchema from './tweet';
 
-import userResolvers from '../resolvers/user';
-import tweetResolvers from '../resolvers/tweet';
-
-const linkSchema = `
+const linkSchema = gql`
   type Query {
     _: Boolean
   }
@@ -20,9 +17,4 @@ const linkSchema = `
   }
 `;
 
-const schema = makeExecutableSchema({
-  typeDefs: [linkSchema, userSchema, tweetSchema],
-  resolvers: [userResolvers, tweetResolvers],
-});
-
-export default schema;
+export default [linkSchema, userSchema, tweetSchema];
