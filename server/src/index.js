@@ -37,14 +37,24 @@ app.use(async (req, res, next) => {
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
-  context: ({ req: { currentUser } }) => ({
-    models,
-    secret: process.env.SECRET,
-    currentUser,
-    userLoader: new DataLoader(keys =>
-      loaders.batchUsers(keys, models),
-    ),
-  }),
+  context: ({ req, connection }) => {
+    if (connection) {
+      return {
+        models,
+      };
+    }
+
+    if (req) {
+      return {
+        models,
+        secret: process.env.SECRET,
+        currentUser: req.currentUser,
+        userLoader: new DataLoader(keys =>
+          loaders.batchUsers(keys, models),
+        ),
+      };
+    }
+  },
 });
 
 server.applyMiddleware({ app, path: '/graphql' });
@@ -65,6 +75,7 @@ sequelize.sync({ force: true }).then(async () => {
 const createUsersWithMessages = date => {
   const createPromiseOne = models.User.create(
     {
+      id: '1',
       username: 'rwieruch',
       email: 'hello@robin.com',
       password: 'rwieruch',
@@ -83,6 +94,7 @@ const createUsersWithMessages = date => {
 
   const createPromiseTwo = models.User.create(
     {
+      id: '2',
       username: 'ddavids',
       email: 'hello@david.com',
       password: 'ddavids',
