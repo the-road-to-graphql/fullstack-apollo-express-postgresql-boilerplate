@@ -1,24 +1,16 @@
+import http from 'http';
 import dotenv from 'dotenv';
 import express from 'express';
-import bodyParser from 'body-parser';
 import cors from 'cors';
-
 import jwt from 'jsonwebtoken';
-
-import {
-  graphqlExpress,
-  graphiqlExpress,
-} from 'apollo-server-express';
-
-import { execute, subscribe } from 'graphql';
-import { createServer } from 'http';
-import { SubscriptionServer } from 'subscriptions-transport-ws';
-
 import DataLoader from 'dataloader';
 
+import { ApolloServer } from 'apollo-server-express';
+
 import schema from './schema';
+import resolvers from './resolvers';
 import models, { sequelize } from './models';
-import { batchUsers } from './loaders';
+import * as loaders from './loaders';
 
 dotenv.config();
 
@@ -42,33 +34,35 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.use(
-  '/graphql',
-  bodyParser.json(),
-  graphqlExpress(async ({ currentUser }) => ({
-    schema,
-    context: {
-      models,
-      secret: process.env.SECRET,
-      currentUser,
-      userLoader: new DataLoader(keys => batchUsers(keys, models)),
-    },
-  })),
-);
-
-app.use(
-  '/graphiql',
-  graphiqlExpress({
-    endpointURL: '/graphql',
-    subscriptionsEndpoint: `ws://localhost:8000/subscriptions`,
+const server = new ApolloServer({
+  typeDefs: schema,
+  resolvers,
+  context: ({ req: { currentUser } }) => ({
+    models,
+    secret: process.env.SECRET,
+    currentUser,
+    userLoader: new DataLoader(keys =>
+      loaders.batchUsers(keys, models),
+    ),
   }),
-);
+});
 
-const server = createServer(app);
+server.applyMiddleware({ app, path: '/graphql' });
+
+const httpServer = http.createServer(app);
+server.installSubscriptionHandlers(httpServer);
 
 sequelize.sync({ force: true }).then(async () => {
-  const date = new Date();
+  const promises = createUsersWithTweets(new Date());
 
+  Promise.all([...promises]).then(() => {
+    httpServer.listen({ port: 8000 }, () => {
+      console.log('Apollo Server on http://localhost:8000/graphql');
+    });
+  });
+});
+
+const createUsersWithTweets = date => {
   const createPromiseOne = models.User.create(
     {
       username: 'rwieruch',
@@ -108,26 +102,5 @@ sequelize.sync({ force: true }).then(async () => {
     },
   );
 
-  Promise.all([createPromiseOne, createPromiseTwo]).then(() => {
-    server.listen(8000, () => {
-      console.log(
-        `Apollo Server is now running on http://localhost:8000`,
-      );
-
-      new SubscriptionServer(
-        {
-          execute,
-          subscribe,
-          schema,
-          onOperation: (message, params, webSocket) => {
-            return { ...params, context: { models } };
-          },
-        },
-        {
-          server,
-          path: '/subscriptions',
-        },
-      );
-    });
-  });
-});
+  return [createPromiseOne, createPromiseTwo];
+};

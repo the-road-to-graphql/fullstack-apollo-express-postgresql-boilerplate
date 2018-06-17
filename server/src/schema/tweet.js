@@ -1,4 +1,6 @@
-export default `
+import { gql } from 'apollo-server-express';
+
+export default gql`
   extend type Query {
     tweets(cursor: String, limit: Int): TweetConnection!
     tweet(id: String!): Tweet!

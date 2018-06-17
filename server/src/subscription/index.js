@@ -1,4 +1,4 @@
-import { PubSub } from 'graphql-subscriptions';
+import { PubSub } from 'apollo-server';
 import * as EVENTS from './events';
 
 export { EVENTS };
