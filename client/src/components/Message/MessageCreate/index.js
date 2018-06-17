@@ -44,6 +44,8 @@ class MessageCreate extends Component {
       <Mutation
         mutation={CREATE_MESSAGE}
         variables={{ text }}
+        // Not used anymore because of Subscription
+
         // update={(cache, { data: { createMessage } }) => {
         //   const data = cache.readQuery({
         //     query: GET_ALL_MESSAGES_WITH_USERS,
