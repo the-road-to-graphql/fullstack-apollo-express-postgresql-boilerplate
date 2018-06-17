@@ -1,1 +1,1 @@
-# twitter-graphql-clone
+# fullstack-apollo-react-express-boilerplate-project
