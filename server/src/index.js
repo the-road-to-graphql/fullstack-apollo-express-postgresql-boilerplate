@@ -1,18 +1,15 @@
 import http from 'http';
-import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import DataLoader from 'dataloader';
-
 import { ApolloServer } from 'apollo-server-express';
 
+import './env';
 import schema from './schema';
 import resolvers from './resolvers';
 import models, { sequelize } from './models';
 import * as loaders from './loaders';
-
-dotenv.config();
 
 const app = express();
 
