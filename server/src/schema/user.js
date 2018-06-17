@@ -28,6 +28,6 @@ export default gql`
     username: String!
     email: String!
     role: String
-    tweets: [Tweet!]!
+    messages: [Message!]!
   }
 `;

@@ -53,7 +53,7 @@ const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
 sequelize.sync({ force: true }).then(async () => {
-  const promises = createUsersWithTweets(new Date());
+  const promises = createUsersWithMessages(new Date());
 
   Promise.all([...promises]).then(() => {
     httpServer.listen({ port: 8000 }, () => {
@@ -62,14 +62,14 @@ sequelize.sync({ force: true }).then(async () => {
   });
 });
 
-const createUsersWithTweets = date => {
+const createUsersWithMessages = date => {
   const createPromiseOne = models.User.create(
     {
       username: 'rwieruch',
       email: 'hello@robin.com',
       password: 'rwieruch',
       role: 'ADMIN',
-      tweets: [
+      messages: [
         {
           text: 'Published the Road to learn React',
           createdAt: date.setSeconds(date.getSeconds() + 1),
@@ -77,7 +77,7 @@ const createUsersWithTweets = date => {
       ],
     },
     {
-      include: [models.Tweet],
+      include: [models.Message],
     },
   );
 
@@ -86,7 +86,7 @@ const createUsersWithTweets = date => {
       username: 'ddavids',
       email: 'hello@david.com',
       password: 'ddavids',
-      tweets: [
+      messages: [
         {
           text: 'Happy to release a GraphQL in React tutorial',
           createdAt: date.setSeconds(date.getSeconds() + 1),
@@ -98,7 +98,7 @@ const createUsersWithTweets = date => {
       ],
     },
     {
-      include: [models.Tweet],
+      include: [models.Message],
     },
   );
 

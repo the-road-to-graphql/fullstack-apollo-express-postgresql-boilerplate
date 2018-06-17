@@ -79,8 +79,8 @@ export default {
   },
 
   User: {
-    tweets: async (user, args, { models }) =>
-      await models.Tweet.findAll({
+    messages: async (user, args, { models }) =>
+      await models.Message.findAll({
         where: {
           userId: user.id,
         },

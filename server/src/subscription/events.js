@@ -1,1 +1,1 @@
-export const TWEET_CREATED = 'TWEET_CREATED';
+export const MESSAGE_CREATED = 'MESSAGE_CREATED';

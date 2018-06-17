@@ -1,4 +1,4 @@
 import userResolvers from '../resolvers/user';
-import tweetResolvers from '../resolvers/tweet';
+import messageResolvers from '../resolvers/message';
 
-export default [userResolvers, tweetResolvers];
+export default [userResolvers, messageResolvers];

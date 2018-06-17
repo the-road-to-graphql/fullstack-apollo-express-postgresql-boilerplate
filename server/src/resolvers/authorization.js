@@ -8,14 +8,14 @@ export const isAdmin = combineResolvers(
     role === 'admin' ? skip : new Error('NOT_AUTHORIZED_AS_ADMIN'),
 );
 
-export const isTweetOwner = async (
+export const isMessageOwner = async (
   parent,
   { id },
   { models, currentUser },
 ) => {
-  const tweet = await models.Tweet.findById(id, { raw: true });
+  const message = await models.Message.findById(id, { raw: true });
 
-  if (tweet.userId !== currentUser.id) {
+  if (message.userId !== currentUser.id) {
     throw new Error('NOT_AUTHORIZED_AS_OWNER');
   }
 

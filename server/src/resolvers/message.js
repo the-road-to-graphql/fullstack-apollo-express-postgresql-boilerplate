@@ -2,7 +2,7 @@ import Sequelize from 'sequelize';
 import { combineResolvers } from 'graphql-resolvers';
 
 import isAuthenticated from './authentication';
-import { isTweetOwner } from './authorization';
+import { isMessageOwner } from './authorization';
 
 import pubsub, { EVENTS } from '../subscription';
 
@@ -13,7 +13,7 @@ const fromCursorHash = string =>
 
 export default {
   Query: {
-    tweets: async (parent, { cursor, limit = 100 }, { models }) => {
+    messages: async (parent, { cursor, limit = 100 }, { models }) => {
       const cursorOptions = cursor
         ? {
             where: {
@@ -24,14 +24,14 @@ export default {
           }
         : {};
 
-      const tweets = await models.Tweet.findAll({
+      const messages = await models.Message.findAll({
         order: [['createdAt', 'DESC']],
         limit: limit + 1,
         ...cursorOptions,
       });
 
-      const hasNextPage = tweets.length > limit;
-      const list = hasNextPage ? tweets.slice(0, -1) : tweets;
+      const hasNextPage = messages.length > limit;
+      const list = hasNextPage ? messages.slice(0, -1) : messages;
 
       return {
         list,
@@ -44,54 +44,54 @@ export default {
       };
     },
 
-    tweet: async (parent, { id }, { models }) =>
-      await models.Tweet.findById(id),
+    message: async (parent, { id }, { models }) =>
+      await models.Message.findById(id),
   },
 
   Mutation: {
-    createTweet: combineResolvers(
+    createMessage: combineResolvers(
       isAuthenticated,
       async (parent, { text }, { models, currentUser }) => {
-        const tweet = await models.Tweet.create({
+        const message = await models.Message.create({
           text,
           userId: currentUser.id,
         });
 
-        pubsub.publish(EVENTS.TWEET_CREATED, tweet);
+        pubsub.publish(EVENTS.MESSAGE_CREATED, message);
 
-        return tweet;
+        return message;
       },
     ),
 
-    deleteTweet: combineResolvers(
+    deleteMessage: combineResolvers(
       isAuthenticated,
-      isTweetOwner,
+      isMessageOwner,
       async (parent, { id }, { models }) =>
-        await models.Tweet.destroy({ where: { id } }),
+        await models.Message.destroy({ where: { id } }),
     ),
   },
 
-  Tweet: {
-    user: async (tweet, args, { userLoader }) =>
-      await userLoader.load(tweet.userId),
+  Message: {
+    user: async (message, args, { userLoader }) =>
+      await userLoader.load(message.userId),
   },
 
   Subscription: {
-    tweetCreated: {
-      resolve: async (tweetCreated, args, { models }) => {
-        const tweet = tweetCreated.get({ raw: true });
-        const user = await models.User.findById(tweet.userId, {
+    messageCreated: {
+      resolve: async (messageCreated, args, { models }) => {
+        const message = messageCreated.get({ raw: true });
+        const user = await models.User.findById(message.userId, {
           raw: true,
         });
 
         return {
-          tweet: {
-            ...tweet,
+          message: {
+            ...message,
             user,
           },
         };
       },
-      subscribe: () => pubsub.asyncIterator(EVENTS.TWEET_CREATED),
+      subscribe: () => pubsub.asyncIterator(EVENTS.MESSAGE_CREATED),
     },
   },
 };

@@ -47,7 +47,7 @@ const user = (sequelize, DataTypes) => {
   };
 
   User.associate = models => {
-    User.hasMany(models.Tweet);
+    User.hasMany(models.Message);
   };
 
   User.beforeCreate(async user => {

@@ -6,7 +6,7 @@ const sequelize = new Sequelize('twitter', 'postgres', 'postgres', {
 
 const models = {
   User: sequelize.import('./user'),
-  Tweet: sequelize.import('./tweet'),
+  Message: sequelize.import('./message'),
 };
 
 Object.keys(models).forEach(key => {

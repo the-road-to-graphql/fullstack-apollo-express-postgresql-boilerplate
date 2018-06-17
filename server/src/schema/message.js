@@ -2,17 +2,17 @@ import { gql } from 'apollo-server-express';
 
 export default gql`
   extend type Query {
-    tweets(cursor: String, limit: Int): TweetConnection!
-    tweet(id: String!): Tweet!
+    messages(cursor: String, limit: Int): MessageConnection!
+    message(id: String!): Message!
   }
 
   extend type Mutation {
-    createTweet(text: String!): Tweet!
-    deleteTweet(id: String!): Boolean!
+    createMessage(text: String!): Message!
+    deleteMessage(id: String!): Boolean!
   }
 
-  type TweetConnection {
-    list: [Tweet!]!
+  type MessageConnection {
+    list: [Message!]!
     pageInfo: PageInfo!
   }
 
@@ -21,7 +21,7 @@ export default gql`
     endCursor: String!
   }
 
-  type Tweet {
+  type Message {
     id: String!
     userId: String!
     user: User!
@@ -30,10 +30,10 @@ export default gql`
   }
 
   extend type Subscription {
-    tweetCreated: TweetCreated!
+    messageCreated: MessageCreated!
   }
 
-  type TweetCreated {
-    tweet: Tweet!
+  type MessageCreated {
+    message: Message!
   }
 `;

@@ -5,10 +5,10 @@ import gql from 'graphql-tag';
 import withSession from '../Session/withSession';
 import ErrorMessage from '../Error';
 
-const TWEET_CREATED = gql`
+const MESSAGE_CREATED = gql`
   subscription {
-    tweetCreated {
-      tweet {
+    messageCreated {
+      message {
         id
         text
         createdAt
@@ -21,9 +21,9 @@ const TWEET_CREATED = gql`
   }
 `;
 
-const CREATE_TWEET = gql`
+const CREATE_MESSAGE = gql`
   mutation($text: String!) {
-    createTweet(text: $text) {
+    createMessage(text: $text) {
       id
       text
       createdAt
@@ -35,16 +35,16 @@ const CREATE_TWEET = gql`
   }
 `;
 
-const DELETE_TWEET = gql`
+const DELETE_MESSAGE = gql`
   mutation($id: String!) {
-    deleteTweet(id: $id)
+    deleteMessage(id: $id)
   }
 `;
 
-const GET_PAGINATED_TWEETS_WITH_USERS = gql`
+const GET_PAGINATED_MESSAGES_WITH_USERS = gql`
   query($cursor: String, $limit: Int!) {
-    tweets(cursor: $cursor, limit: $limit)
-      @connection(key: "TweetsConnection") {
+    messages(cursor: $cursor, limit: $limit)
+      @connection(key: "MessagesConnection") {
       list {
         id
         text
@@ -62,9 +62,9 @@ const GET_PAGINATED_TWEETS_WITH_USERS = gql`
   }
 `;
 
-const GET_ALL_TWEETS_WITH_USERS = gql`
+const GET_ALL_MESSAGES_WITH_USERS = gql`
   query {
-    tweets(order: "DESC") @connection(key: "TweetsConnection") {
+    messages(order: "DESC") @connection(key: "MessagesConnection") {
       list {
         id
         text
@@ -84,12 +84,12 @@ const GET_ALL_TWEETS_WITH_USERS = gql`
 const Landing = ({ session }) => (
   <Fragment>
     <h2>Feed</h2>
-    {session && session.currentUser && <TweetCreate />}
-    <Tweets currentUser={session.currentUser} limit={2} />
+    {session && session.currentUser && <MessageCreate />}
+    <Messages currentUser={session.currentUser} limit={2} />
   </Fragment>
 );
 
-class TweetCreate extends Component {
+class MessageCreate extends Component {
   state = {
     text: '',
   };
@@ -99,11 +99,11 @@ class TweetCreate extends Component {
     this.setState({ [name]: value });
   };
 
-  onSubmit = async (event, createTweet) => {
+  onSubmit = async (event, createMessage) => {
     event.preventDefault();
 
     try {
-      await createTweet();
+      await createMessage();
       this.setState({ text: '' });
     } catch (error) {}
   };
@@ -113,34 +113,36 @@ class TweetCreate extends Component {
 
     return (
       <Mutation
-        mutation={CREATE_TWEET}
+        mutation={CREATE_MESSAGE}
         variables={{ text }}
-        // update={(cache, { data: { createTweet } }) => {
+        // update={(cache, { data: { createMessage } }) => {
         //   const data = cache.readQuery({
-        //     query: GET_ALL_TWEETS_WITH_USERS,
+        //     query: GET_ALL_MESSAGES_WITH_USERS,
         //   });
 
         //   cache.writeQuery({
-        //     query: GET_ALL_TWEETS_WITH_USERS,
+        //     query: GET_ALL_MESSAGES_WITH_USERS,
         //     data: {
         //       ...data,
-        //       tweets: {
-        //         ...data.tweets,
-        //         list: [createTweet, ...data.tweets.list],
-        //         pageInfo: data.tweets.pageInfo,
+        //       messages: {
+        //         ...data.messages,
+        //         list: [createMessage, ...data.messages.list],
+        //         pageInfo: data.messages.pageInfo,
         //       },
         //     },
         //   });
         // }}
       >
-        {(createTweet, { data, loading, error }) => (
-          <form onSubmit={event => this.onSubmit(event, createTweet)}>
+        {(createMessage, { data, loading, error }) => (
+          <form
+            onSubmit={event => this.onSubmit(event, createMessage)}
+          >
             <textarea
               name="text"
               value={text}
               onChange={this.onChange}
               type="text"
-              placeholder="Your tweet ..."
+              placeholder="Your message ..."
             />
             <button type="submit">Send</button>
 
@@ -152,24 +154,24 @@ class TweetCreate extends Component {
   }
 }
 
-const Tweets = ({ limit, currentUser }) => (
+const Messages = ({ limit, currentUser }) => (
   <Query
-    query={GET_PAGINATED_TWEETS_WITH_USERS}
+    query={GET_PAGINATED_MESSAGES_WITH_USERS}
     variables={{ limit }}
   >
     {({ data, loading, error, fetchMore, subscribeToMore }) => {
-      const { tweets } = data;
+      const { messages } = data;
 
-      if (loading || !tweets) {
+      if (loading || !messages) {
         return <div>Loading ...</div>;
       }
 
-      const { list, pageInfo } = tweets;
+      const { list, pageInfo } = messages;
 
       return (
         <Fragment>
-          <TweetList
-            tweets={list}
+          <MessageList
+            messages={list}
             currentUser={currentUser}
             subscribeToMore={subscribeToMore}
           />
@@ -192,11 +194,11 @@ const Tweets = ({ limit, currentUser }) => (
                     }
 
                     return {
-                      tweets: {
-                        ...fetchMoreResult.tweets,
+                      messages: {
+                        ...fetchMoreResult.messages,
                         list: [
-                          ...previousResult.tweets.list,
-                          ...fetchMoreResult.tweets.list,
+                          ...previousResult.messages.list,
+                          ...fetchMoreResult.messages.list,
                         ],
                       },
                     };
@@ -213,22 +215,25 @@ const Tweets = ({ limit, currentUser }) => (
   </Query>
 );
 
-class TweetList extends Component {
+class MessageList extends Component {
   componentDidMount() {
     this.props.subscribeToMore({
-      document: TWEET_CREATED,
+      document: MESSAGE_CREATED,
       updateQuery: (previousResult, { subscriptionData }) => {
         if (!subscriptionData.data) {
           return previousResult;
         }
 
-        const { tweetCreated } = subscriptionData.data;
+        const { messageCreated } = subscriptionData.data;
 
         return {
           ...previousResult,
-          tweets: {
-            ...previousResult.tweets,
-            list: [tweetCreated.tweet, ...previousResult.tweets.list],
+          messages: {
+            ...previousResult.messages,
+            list: [
+              messageCreated.message,
+              ...previousResult.messages.list,
+            ],
           },
         };
       },
@@ -236,43 +241,43 @@ class TweetList extends Component {
   }
 
   render() {
-    const { tweets, currentUser } = this.props;
+    const { messages, currentUser } = this.props;
 
     return (
       <Fragment>
-        {tweets.map(tweet => (
-          <div key={tweet.id}>
-            <h3>{tweet.user.username}</h3>
-            <small>{tweet.createdAt}</small>
-            <p>{tweet.text}</p>
+        {messages.map(message => (
+          <div key={message.id}>
+            <h3>{message.user.username}</h3>
+            <small>{message.createdAt}</small>
+            <p>{message.text}</p>
 
             {currentUser &&
-              tweet.user.id === currentUser.id && (
+              message.user.id === currentUser.id && (
                 <Mutation
-                  mutation={DELETE_TWEET}
-                  variables={{ id: tweet.id }}
+                  mutation={DELETE_MESSAGE}
+                  variables={{ id: message.id }}
                   update={cache => {
                     const data = cache.readQuery({
-                      query: GET_ALL_TWEETS_WITH_USERS,
+                      query: GET_ALL_MESSAGES_WITH_USERS,
                     });
 
                     cache.writeQuery({
-                      query: GET_ALL_TWEETS_WITH_USERS,
+                      query: GET_ALL_MESSAGES_WITH_USERS,
                       data: {
                         ...data,
-                        tweets: {
-                          ...data.tweets,
-                          list: data.tweets.list.filter(
-                            node => node.id !== tweet.id,
+                        messages: {
+                          ...data.messages,
+                          list: data.messages.list.filter(
+                            node => node.id !== message.id,
                           ),
-                          pageInfo: data.tweets.pageInfo,
+                          pageInfo: data.messages.pageInfo,
                         },
                       },
                     });
                   }}
                 >
-                  {(deleteTweet, { data, loading, error }) => (
-                    <button type="button" onClick={deleteTweet}>
+                  {(deleteMessage, { data, loading, error }) => (
+                    <button type="button" onClick={deleteMessage}>
                       Delete
                     </button>
                   )}
