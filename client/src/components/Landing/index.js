@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 
 import withSession from '../Session/withSession';
 import ErrorMessage from '../Error';
+import Loading from '../Loading';
 
 const MESSAGE_CREATED = gql`
   subscription {
@@ -163,7 +164,7 @@ const Messages = ({ limit, currentUser }) => (
       const { messages } = data;
 
       if (loading || !messages) {
-        return <div>Loading ...</div>;
+        return <Loading />;
       }
 
       const { list, pageInfo } = messages;
