@@ -57,7 +57,9 @@ export default {
           userId: currentUser.id,
         });
 
-        pubsub.publish(EVENTS.MESSAGE_CREATED, message);
+        pubsub.publish(EVENTS.MESSAGE_CREATED, {
+          messageCreated: { message },
+        });
 
         return message;
       },
@@ -78,19 +80,6 @@ export default {
 
   Subscription: {
     messageCreated: {
-      resolve: async (messageCreated, args, { models }) => {
-        const message = messageCreated.get({ raw: true });
-        const user = await models.User.findById(message.userId, {
-          raw: true,
-        });
-
-        return {
-          message: {
-            ...message,
-            user,
-          },
-        };
-      },
       subscribe: () => pubsub.asyncIterator(EVENTS.MESSAGE_CREATED),
     },
   },

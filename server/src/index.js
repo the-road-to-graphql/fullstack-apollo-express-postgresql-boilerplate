@@ -41,6 +41,9 @@ const server = new ApolloServer({
     if (connection) {
       return {
         models,
+        userLoader: new DataLoader(keys =>
+          loaders.batchUsers(keys, models),
+        ),
       };
     }
 

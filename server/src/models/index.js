@@ -1,8 +1,13 @@
 import Sequelize from 'sequelize';
 
-const sequelize = new Sequelize('twitter', 'postgres', 'postgres', {
-  dialect: 'postgres',
-});
+const sequelize = new Sequelize(
+  'mydatabase',
+  'postgres',
+  'postgres',
+  {
+    dialect: 'postgres',
+  },
+);
 
 const models = {
   User: sequelize.import('./user'),
