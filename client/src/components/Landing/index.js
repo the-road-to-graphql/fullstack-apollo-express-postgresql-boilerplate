@@ -171,32 +171,7 @@ const Tweets = ({ limit, currentUser }) => (
           <TweetList
             tweets={list}
             currentUser={currentUser}
-            subscribeToCreatedTweets={() =>
-              subscribeToMore({
-                document: TWEET_CREATED,
-                updateQuery: (
-                  previousResult,
-                  { subscriptionData },
-                ) => {
-                  if (!subscriptionData.data) {
-                    return previousResult;
-                  }
-
-                  const { tweetCreated } = subscriptionData.data;
-
-                  return {
-                    ...previousResult,
-                    tweets: {
-                      ...previousResult.tweets,
-                      list: [
-                        tweetCreated.tweet,
-                        ...previousResult.tweets.list,
-                      ],
-                    },
-                  };
-                },
-              })
-            }
+            subscribeToMore={subscribeToMore}
           />
 
           {pageInfo.hasNextPage && (
@@ -240,7 +215,24 @@ const Tweets = ({ limit, currentUser }) => (
 
 class TweetList extends Component {
   componentDidMount() {
-    this.props.subscribeToCreatedTweets();
+    this.props.subscribeToMore({
+      document: TWEET_CREATED,
+      updateQuery: (previousResult, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return previousResult;
+        }
+
+        const { tweetCreated } = subscriptionData.data;
+
+        return {
+          ...previousResult,
+          tweets: {
+            ...previousResult.tweets,
+            list: [tweetCreated.tweet, ...previousResult.tweets.list],
+          },
+        };
+      },
+    });
   }
 
   render() {
