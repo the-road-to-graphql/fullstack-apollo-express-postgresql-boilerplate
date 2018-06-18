@@ -1,6 +1,5 @@
 import http from 'http';
 import express from 'express';
-import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import DataLoader from 'dataloader';
 import { ApolloServer } from 'apollo-server-express';
@@ -12,8 +11,6 @@ import models, { sequelize } from './models';
 import * as loaders from './loaders';
 
 const app = express();
-
-app.use(cors());
 
 app.use(async (req, res, next) => {
   const token = req.headers['x-token'];
