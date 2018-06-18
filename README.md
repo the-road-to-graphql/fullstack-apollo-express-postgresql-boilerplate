@@ -53,7 +53,7 @@ DATABASE_PASSWORD=postgres
 SECRET=asdlplplfwfwefwekwself.2342.dawasdq
 ```
 
-The `SECRET` is just a random string for your authentication. Keep all these information secure by adding the *.env* file to your *.gitignore* file. No third-party should have access to these information.
+The `SECRET` is just a random string for your authentication. Keep all these information secure by adding the *.env* file to your *.gitignore* file. No third-party should have access to this information.
 
 ## Want to learn more about React + GraphQL + Apollo?
 
