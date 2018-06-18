@@ -59,7 +59,9 @@ server.applyMiddleware({ app, path: '/graphql' });
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
-sequelize.sync({ force: true }).then(async () => {
+const eraseDatabaseOnSync = true;
+
+sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
   const promises = createUsersWithMessages(new Date());
 
   Promise.all([...promises]).then(() => {
