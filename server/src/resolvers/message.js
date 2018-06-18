@@ -31,14 +31,14 @@ export default {
       });
 
       const hasNextPage = messages.length > limit;
-      const list = hasNextPage ? messages.slice(0, -1) : messages;
+      const edges = hasNextPage ? messages.slice(0, -1) : messages;
 
       return {
-        list,
+        edges,
         pageInfo: {
           hasNextPage,
           endCursor: toCursorHash(
-            list[list.length - 1].createdAt.toString(),
+            edges[edges.length - 1].createdAt.toString(),
           ),
         },
       };

@@ -25,7 +25,7 @@ const GET_PAGINATED_MESSAGES_WITH_USERS = gql`
   query($cursor: String, $limit: Int!) {
     messages(cursor: $cursor, limit: $limit)
       @connection(key: "MessagesConnection") {
-      list {
+      edges {
         id
         text
         createdAt
@@ -54,12 +54,12 @@ const Messages = ({ limit, currentUser }) => (
         return <Loading />;
       }
 
-      const { list, pageInfo } = messages;
+      const { edges, pageInfo } = messages;
 
       return (
         <Fragment>
           <MessageList
-            messages={list}
+            messages={edges}
             currentUser={currentUser}
             subscribeToMore={subscribeToMore}
           />
@@ -101,9 +101,9 @@ const MoreMessagesButton = ({
           return {
             messages: {
               ...fetchMoreResult.messages,
-              list: [
-                ...previousResult.messages.list,
-                ...fetchMoreResult.messages.list,
+              edges: [
+                ...previousResult.messages.edges,
+                ...fetchMoreResult.messages.edges,
               ],
             },
           };
@@ -130,9 +130,9 @@ class MessageList extends Component {
           ...previousResult,
           messages: {
             ...previousResult.messages,
-            list: [
+            edges: [
               messageCreated.message,
-              ...previousResult.messages.list,
+              ...previousResult.messages.edges,
             ],
           },
         };

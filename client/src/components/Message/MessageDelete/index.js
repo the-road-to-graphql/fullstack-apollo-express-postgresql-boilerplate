@@ -5,7 +5,7 @@ import gql from 'graphql-tag';
 const GET_ALL_MESSAGES_WITH_USERS = gql`
   query {
     messages(order: "DESC") @connection(key: "MessagesConnection") {
-      list {
+      edges {
         id
         text
         createdAt
@@ -42,7 +42,7 @@ const MessageDelete = ({ message }) => (
           ...data,
           messages: {
             ...data.messages,
-            list: data.messages.list.filter(
+            edges: data.messages.edges.filter(
               node => node.id !== message.id,
             ),
             pageInfo: data.messages.pageInfo,

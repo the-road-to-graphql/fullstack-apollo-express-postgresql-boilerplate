@@ -7,7 +7,7 @@
     "start": "nodemon --exec babel-node src/index.js"
   },
   "keywords": [],
-  "author": "“Robin <“wrobin@gmx.net”> (https://www.robinwieruch.de)",
+  "author": "“Robin <hello@rwieruch.com”> (https://www.robinwieruch.de)",
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^2.0.0-rc.0",

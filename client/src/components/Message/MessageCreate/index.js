@@ -57,7 +57,7 @@ class MessageCreate extends Component {
         //       ...data,
         //       messages: {
         //         ...data.messages,
-        //         list: [createMessage, ...data.messages.list],
+        //         edges: [createMessage, ...data.messages.edges],
         //         pageInfo: data.messages.pageInfo,
         //       },
         //     },
