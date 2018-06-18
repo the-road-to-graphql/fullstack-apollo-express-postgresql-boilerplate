@@ -8,13 +8,12 @@ A full-fledged Apollo Server 2 with Apollo Client 2 starter project with React, 
   * Queries, Mutations, Subscriptions
 * Node.js with Express and Apollo Server 2
 * PostgreSQL Database with Sequelize
-  * with users
-  * with messages
+  * entities: users, messages
 * Authentication
   * powered by JWT and local storage
-  * Sign In, Sign Out, Sign Out
+  * Sign Up, Sign In, Sign Out
 * Authorization
-  * protected endpoint (e.g. verify session if there is one)
+  * protected endpoint (e.g. verify valid session)
   * protected resolvers (e.g. e.g. session-based, role-based)
   * protected routes (e.g. session-based, role-based)
 * performance optimizations
