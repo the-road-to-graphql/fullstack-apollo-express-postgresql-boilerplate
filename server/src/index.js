@@ -1,4 +1,5 @@
 import http from 'http';
+import cors from 'cors';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import DataLoader from 'dataloader';
@@ -12,13 +13,15 @@ import * as loaders from './loaders';
 
 const app = express();
 
+app.use(cors());
+
 app.use(async (req, res, next) => {
   const token = req.headers['x-token'];
 
   if (token) {
     try {
-      const currentUser = await jwt.verify(token, process.env.SECRET);
-      req.currentUser = currentUser;
+      const me = await jwt.verify(token, process.env.SECRET);
+      req.me = me;
     } catch (e) {
       const error = 'Your session expired. Sign in again.';
       res.status(401).json({ error });
@@ -45,7 +48,7 @@ const server = new ApolloServer({
       return {
         models,
         secret: process.env.SECRET,
-        currentUser: req.currentUser,
+        me: req.me,
         userLoader: new DataLoader(keys =>
           loaders.batchUsers(keys, models),
         ),
