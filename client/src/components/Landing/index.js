@@ -8,8 +8,8 @@ const Landing = ({ session }) => (
   <Fragment>
     <h2>Feed</h2>
 
-    {session && session.currentUser && <MessageCreate />}
-    <Messages currentUser={session.currentUser} limit={2} />
+    {session && session.me && <MessageCreate />}
+    <Messages me={session.me} limit={2} />
   </Fragment>
 );
 

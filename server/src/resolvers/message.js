@@ -51,10 +51,10 @@ export default {
   Mutation: {
     createMessage: combineResolvers(
       isAuthenticated,
-      async (parent, { text }, { models, currentUser }) => {
+      async (parent, { text }, { models, me }) => {
         const message = await models.Message.create({
           text,
-          userId: currentUser.id,
+          userId: me.id,
         });
 
         pubsub.publish(EVENTS.MESSAGE_CREATED, {

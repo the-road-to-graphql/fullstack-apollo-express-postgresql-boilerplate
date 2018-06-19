@@ -6,7 +6,7 @@ import SignOutButton from '../SignOut';
 
 const Navigation = ({ session }) => (
   <div>
-    {session && session.currentUser ? (
+    {session && session.me ? (
       <NavigationAuth session={session} />
     ) : (
       <NavigationNonAuth />
@@ -20,13 +20,11 @@ const NavigationAuth = ({ session }) => (
       <Link to={routes.LANDING}>Landing</Link>
     </li>
     <li>
-      <Link to={routes.ACCOUNT}>
-        Account ({session.currentUser.username})
-      </Link>
+      <Link to={routes.ACCOUNT}>Account ({session.me.username})</Link>
     </li>
     {session &&
-      session.currentUser &&
-      session.currentUser.role === 'ADMIN' && (
+      session.me &&
+      session.me.role === 'ADMIN' && (
         <li>
           <Link to={routes.ADMIN}>Admin</Link>
         </li>

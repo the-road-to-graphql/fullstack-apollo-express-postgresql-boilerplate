@@ -42,7 +42,7 @@ const GET_PAGINATED_MESSAGES_WITH_USERS = gql`
   }
 `;
 
-const Messages = ({ limit, currentUser }) => (
+const Messages = ({ limit, me }) => (
   <Query
     query={GET_PAGINATED_MESSAGES_WITH_USERS}
     variables={{ limit }}
@@ -60,7 +60,7 @@ const Messages = ({ limit, currentUser }) => (
         <Fragment>
           <MessageList
             messages={edges}
-            currentUser={currentUser}
+            me={me}
             subscribeToMore={subscribeToMore}
           />
 
@@ -145,26 +145,22 @@ class MessageList extends Component {
   }
 
   render() {
-    const { messages, currentUser } = this.props;
+    const { messages, me } = this.props;
 
     return messages.map(message => (
-      <MessageItem
-        key={message.id}
-        message={message}
-        currentUser={currentUser}
-      />
+      <MessageItem key={message.id} message={message} me={me} />
     ));
   }
 }
 
-const MessageItem = ({ message, currentUser }) => (
+const MessageItem = ({ message, me }) => (
   <div>
     <h3>{message.user.username}</h3>
     <small>{message.createdAt}</small>
     <p>{message.text}</p>
 
-    {currentUser &&
-      message.user.id === currentUser.id && (
+    {me &&
+      message.user.id === me.id && (
         <MessageDelete message={message} />
       )}
   </div>

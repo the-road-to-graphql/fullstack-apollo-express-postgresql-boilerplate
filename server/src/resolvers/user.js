@@ -17,12 +17,12 @@ export default {
     user: async (parent, { id }, { models }) =>
       await models.User.findById(id),
 
-    currentUser: async (parent, args, { models, currentUser }) => {
-      if (!currentUser) {
+    me: async (parent, args, { models, me }) => {
+      if (!me) {
         return null;
       }
 
-      return await models.User.findById(currentUser.id);
+      return await models.User.findById(me.id);
     },
   },
 
@@ -63,8 +63,8 @@ export default {
 
     updateUser: combineResolvers(
       isAuthenticated,
-      async (parent, { username }, { models, currentUser }) => {
-        const user = await models.User.findById(currentUser.id);
+      async (parent, { username }, { models, me }) => {
+        const user = await models.User.findById(me.id);
         return await user.update({ username });
       },
     ),
