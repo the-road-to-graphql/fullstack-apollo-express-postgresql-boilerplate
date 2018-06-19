@@ -7,6 +7,7 @@ A full-fledged Apollo Server 2 with Apollo Client 2 starter project with React, 
 * React (create-react-app) with Apollo Client 2
   * Queries, Mutations, Subscriptions
 * Node.js with Express and Apollo Server 2
+  * cursor-based Pagination
 * PostgreSQL Database with Sequelize
   * entities: users, messages
 * Authentication
