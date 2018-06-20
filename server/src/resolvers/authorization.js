@@ -5,7 +5,7 @@ import isAuthenticated from './authentication';
 export const isAdmin = combineResolvers(
   isAuthenticated,
   (parent, args, { me: { role } }) =>
-    role === 'admin' ? skip : new Error('NOT_AUTHORIZED_AS_ADMIN'),
+    role === 'ADMIN' ? skip : new Error('NOT_AUTHORIZED_AS_ADMIN'),
 );
 
 export const isMessageOwner = async (
