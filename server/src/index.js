@@ -65,19 +65,16 @@ server.installSubscriptionHandlers(httpServer);
 const eraseDatabaseOnSync = true;
 
 sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
-  const promises = createUsersWithMessages(new Date());
+  createUsersWithMessages(new Date());
 
-  Promise.all([...promises]).then(() => {
-    httpServer.listen({ port: 8000 }, () => {
-      console.log('Apollo Server on http://localhost:8000/graphql');
-    });
+  httpServer.listen({ port: 8000 }, () => {
+    console.log('Apollo Server on http://localhost:8000/graphql');
   });
 });
 
-const createUsersWithMessages = date => {
-  const createPromiseOne = models.User.create(
+const createUsersWithMessages = async date => {
+  await models.User.create(
     {
-      id: '1',
       username: 'rwieruch',
       email: 'hello@robin.com',
       password: 'rwieruch',
@@ -94,9 +91,8 @@ const createUsersWithMessages = date => {
     },
   );
 
-  const createPromiseTwo = models.User.create(
+  await models.User.create(
     {
-      id: '2',
       username: 'ddavids',
       email: 'hello@david.com',
       password: 'ddavids',
@@ -115,6 +111,4 @@ const createUsersWithMessages = date => {
       include: [models.Message],
     },
   );
-
-  return [createPromiseOne, createPromiseTwo];
 };
