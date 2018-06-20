@@ -1,7 +1,16 @@
 import { expect } from 'chai';
-import axios from 'axios';
 
-import { signIn } from './util';
+import {
+  signInApi,
+  meApi,
+  meApiWithoutToken,
+  userApi,
+  usersApi,
+  signUpApi,
+  updateUserApi,
+  updateUserWithoutTokenApi,
+  deleteUserApi,
+} from './util';
 
 describe('users', () => {
   describe('user(id: String!): User', () => {
@@ -17,21 +26,7 @@ describe('users', () => {
         },
       };
 
-      const result = await axios.post(
-        'http://localhost:8000/graphql',
-        {
-          query: `
-            {
-              user(id: "1") {
-                id
-                username
-                email
-                role
-              }
-            }
-          `,
-        },
-      );
+      const result = await userApi('1');
 
       expect(result.data).to.eql(expectedResult);
     });
@@ -43,21 +38,7 @@ describe('users', () => {
         },
       };
 
-      const result = await axios.post(
-        'http://localhost:8000/graphql',
-        {
-          query: `
-            {
-              user(id: "42") {
-                id
-                username
-                email
-                role
-              }
-            }
-          `,
-        },
-      );
+      const result = await userApi('42');
 
       expect(result.data).to.eql(expectedResult);
     });
@@ -84,21 +65,7 @@ describe('users', () => {
         },
       };
 
-      const result = await axios.post(
-        'http://localhost:8000/graphql',
-        {
-          query: `
-            {
-              users {
-                id
-                username
-                email
-                role
-              }
-            }
-          `,
-        },
-      );
+      const result = await usersApi();
 
       expect(result.data).to.eql(expectedResult);
     });
@@ -112,23 +79,9 @@ describe('users', () => {
         },
       };
 
-      const result = await axios.post(
-        'http://localhost:8000/graphql',
-        {
-          query: `
-            {
-              me {
-                id
-                username
-                email
-                role
-              }
-            }
-          `,
-        },
-      );
+      const { data } = await meApiWithoutToken();
 
-      expect(result.data).to.eql(expectedResult);
+      expect(data).to.eql(expectedResult);
     });
 
     it('returns me when me is signed in', async () => {
@@ -138,35 +91,21 @@ describe('users', () => {
             id: '1',
             username: 'rwieruch',
             email: 'hello@robin.com',
-            role: 'ADMIN',
           },
         },
       };
 
-      const token = await signIn('rwieruch', 'rwieruch');
-
-      const result = await axios.post(
-        'http://localhost:8000/graphql',
-        {
-          query: `
-            {
-              me {
-                id
-                username
-                email
-                role
-              }
-            }
-          `,
-        },
-        {
-          headers: {
-            'x-token': token,
+      const {
+        data: {
+          data: {
+            signIn: { token },
           },
         },
-      );
+      } = await signInApi('rwieruch', 'rwieruch');
 
-      expect(result.data).to.eql(expectedResult);
+      const { data } = await meApi(token);
+
+      expect(data).to.eql(expectedResult);
     });
   });
 
@@ -180,52 +119,13 @@ describe('users', () => {
             signUp: { token },
           },
         },
-      } = await axios.post('http://localhost:8000/graphql', {
-        query: `
-            mutation(
-              $username: String!,
-              $email: String!,
-              $password: String!
-            ) {
-              signUp(
-                username: $username,
-                email: $email,
-                password: $password
-              ) {
-                token
-              }
-            }
-          `,
-        variables: {
-          username: 'bar',
-          email: 'foo@bar.com',
-          password: 'asdasdasd',
-        },
-      });
+      } = await signUpApi('bar', 'foo@bar.com', 'asdasdasd');
 
       const {
         data: {
           data: { me },
         },
-      } = await axios.post(
-        'http://localhost:8000/graphql',
-        {
-          query: `
-            {
-              me {
-                id
-                email
-                username
-              }
-            }
-          `,
-        },
-        {
-          headers: {
-            'x-token': token,
-          },
-        },
-      );
+      } = await meApi(token);
 
       expect(me).to.eql({
         id: '3',
@@ -233,70 +133,105 @@ describe('users', () => {
         email: 'foo@bar.com',
       });
 
-      // update
+      // update as user
 
       const {
         data: {
           data: { updateUser },
         },
-      } = await axios.post(
-        'http://localhost:8000/graphql',
-        {
-          query: `
-            mutation ($username: String!) {
-              updateUser(username: $username) {
-                username
-              }
-            }
-          `,
-          variables: {
-            username: 'foo',
-          },
-        },
-        {
-          headers: {
-            'x-token': token,
-          },
-        },
-      );
+      } = await updateUserApi(token, 'foo');
 
       expect(updateUser.username).to.eql('foo');
 
       // delete as admin
 
-      token = await signIn('rwieruch', 'rwieruch');
+      const {
+        data: {
+          data: {
+            signIn: { token: adminToken },
+          },
+        },
+      } = await signInApi('rwieruch', 'rwieruch');
 
       const {
         data: {
           data: { deleteUser },
         },
-      } = await axios.post(
-        'http://localhost:8000/graphql',
-        {
-          query: `
-            mutation ($id: String!) {
-              deleteUser(id: $id)
-            }
-          `,
-          variables: {
-            id: me.id,
-          },
-        },
-        {
-          headers: {
-            'x-token': token,
-          },
-        },
-      );
+      } = await deleteUserApi(adminToken, me.id);
 
       expect(deleteUser).to.eql(true);
     });
   });
-});
 
-// { data: null,
-//   errors:
-//    [ { message: 'NOT_AUTHORIZED_AS_ADMIN',
-//        locations: [],
-//        path: [Array],
-//        extensions: [Object] } ] }
+  describe('deleteUser(id: String!): Boolean!', () => {
+    it('returns an error because only admins can delete a user', async () => {
+      const {
+        data: {
+          data: {
+            signIn: { token },
+          },
+        },
+      } = await signInApi('ddavids', 'ddavids');
+
+      const {
+        data: { errors },
+      } = await deleteUserApi(token, '1');
+
+      expect(errors[0].message).to.eql('NOT_AUTHORIZED_AS_ADMIN');
+    });
+  });
+
+  describe('updateUser(username: String!): User!', () => {
+    it('returns an error because only authenticated users can update a user', async () => {
+      const {
+        data: { errors },
+      } = await updateUserWithoutTokenApi('foo');
+
+      expect(errors[0].message).to.eql('NOT_AUTHENTICATED');
+    });
+  });
+
+  describe('signIn(login: String!, password: String!): Token!', () => {
+    it('returns a token when a user signs in with username', async () => {
+      const {
+        data: {
+          data: {
+            signIn: { token },
+          },
+        },
+      } = await signInApi('ddavids', 'ddavids');
+
+      expect(token).to.be.a('string');
+    });
+
+    it('returns a token when a user signs in with email', async () => {
+      const {
+        data: {
+          data: {
+            signIn: { token },
+          },
+        },
+      } = await signInApi('hello@david.com', 'ddavids');
+
+      expect(token).to.be.a('string');
+    });
+
+    it('returns an error when a user provides a wrong password', async () => {
+      const {
+        data: { errors },
+      } = await signInApi('ddavids', 'foo');
+
+      expect(errors[0].message).to.eql('Invalid password.');
+    });
+  });
+
+  it('returns an error when a user is not found', async () => {
+    const {
+      data: { errors },
+    } = await signInApi('foo', 'ddavids');
+
+    expect(errors[0].message).to.eql(
+      'No user found with this login credentials.',
+    );
+  });
+});
