@@ -19,6 +19,7 @@ A full-fledged Apollo Server 2 with Apollo Client 2 starter project with React, 
   * protected routes (e.g. session-based, role-based)
 * performance optimizations
   * example of using Facebook's dataloader
+* E2E testing
 
 ## Installation
 
@@ -54,6 +55,13 @@ SECRET=asdlplplfwfwefwekwself.2342.dawasdq
 ```
 
 The `SECRET` is just a random string for your authentication. Keep all these information secure by adding the *.env* file to your *.gitignore* file. No third-party should have access to this information.
+
+#### Testing
+
+* adjust `test-server` npm script with `TEST_DATABASE` environment variable in package.json to match your testing database name
+  * to match it from package.json: `createdb mytestdatabase` with psql
+* one terminal: npm run test-server
+* second terminal: npm run test
 
 ## Want to learn more about React + GraphQL + Apollo?
 
