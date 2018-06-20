@@ -10,7 +10,7 @@ import {
   updateUserApi,
   updateUserWithoutTokenApi,
   deleteUserApi,
-} from './util';
+} from './api';
 
 describe('users', () => {
   describe('user(id: String!): User', () => {

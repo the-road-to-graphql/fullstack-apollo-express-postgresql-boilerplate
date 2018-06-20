@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const API_URL = 'http://localhost:8000/graphql';
+
 export const signInApi = async (login, password) =>
-  await axios.post('http://localhost:8000/graphql', {
+  await axios.post(API_URL, {
     query: `
       mutation ($login: String!, $password: String!) {
         signIn(login: $login, password: $password) {
@@ -17,7 +19,7 @@ export const signInApi = async (login, password) =>
 
 export const meApi = async token =>
   await axios.post(
-    'http://localhost:8000/graphql',
+    API_URL,
     {
       query: `
         {
@@ -37,7 +39,7 @@ export const meApi = async token =>
   );
 
 export const meApiWithoutToken = async () =>
-  await axios.post('http://localhost:8000/graphql', {
+  await axios.post(API_URL, {
     query: `
       {
         me {
@@ -50,7 +52,7 @@ export const meApiWithoutToken = async () =>
   });
 
 export const userApi = async id =>
-  axios.post('http://localhost:8000/graphql', {
+  axios.post(API_URL, {
     query: `
       query ($id: String!) {
         user(id: $id) {
@@ -67,7 +69,7 @@ export const userApi = async id =>
   });
 
 export const usersApi = async () =>
-  axios.post('http://localhost:8000/graphql', {
+  axios.post(API_URL, {
     query: `
       {
         users {
@@ -81,7 +83,7 @@ export const usersApi = async () =>
   });
 
 export const signUpApi = async (username, email, password) =>
-  axios.post('http://localhost:8000/graphql', {
+  axios.post(API_URL, {
     query: `
       mutation(
         $username: String!,
@@ -105,7 +107,7 @@ export const signUpApi = async (username, email, password) =>
   });
 
 export const updateUserWithoutTokenApi = async username =>
-  axios.post('http://localhost:8000/graphql', {
+  axios.post(API_URL, {
     query: `
       mutation ($username: String!) {
         updateUser(username: $username) {
@@ -120,7 +122,7 @@ export const updateUserWithoutTokenApi = async username =>
 
 export const updateUserApi = async (token, username) =>
   axios.post(
-    'http://localhost:8000/graphql',
+    API_URL,
     {
       query: `
         mutation ($username: String!) {
@@ -142,7 +144,7 @@ export const updateUserApi = async (token, username) =>
 
 export const deleteUserApi = async (token, id) =>
   axios.post(
-    'http://localhost:8000/graphql',
+    API_URL,
     {
       query: `
         mutation ($id: String!) {
