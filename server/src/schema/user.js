@@ -2,9 +2,9 @@ import { gql } from 'apollo-server-express';
 
 export default gql`
   extend type Query {
-    users: [User!]
-    user(id: String!): User
     me: User
+    user(id: ID!): User
+    users: [User!]
   }
 
   extend type Mutation {
@@ -16,7 +16,7 @@ export default gql`
     signIn(login: String!, password: String!): Token!
 
     updateUser(username: String!): User!
-    deleteUser(id: String!): Boolean!
+    deleteUser(id: ID!): Boolean!
   }
 
   type Token {
@@ -24,7 +24,7 @@ export default gql`
   }
 
   type User {
-    id: String!
+    id: ID!
     username: String!
     email: String!
     role: String
