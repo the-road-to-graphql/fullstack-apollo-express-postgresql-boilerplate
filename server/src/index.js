@@ -34,6 +34,16 @@ app.use(async (req, res, next) => {
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
+  formatError: error => {
+    const message = error.message
+      .replace('SequelizeValidationError: ', '')
+      .replace('Validation error: ', '');
+
+    return {
+      ...error,
+      message,
+    };
+  },
   context: ({ req, connection }) => {
     if (connection) {
       return {
