@@ -32,6 +32,10 @@ const user = (sequelize, DataTypes) => {
     },
   });
 
+  User.associate = models => {
+    User.hasMany(models.Message);
+  };
+
   User.findByLogin = async login => {
     let user = await User.findOne({
       where: { username: login },
@@ -44,10 +48,6 @@ const user = (sequelize, DataTypes) => {
     }
 
     return user;
-  };
-
-  User.associate = models => {
-    User.hasMany(models.Message);
   };
 
   User.beforeCreate(async user => {

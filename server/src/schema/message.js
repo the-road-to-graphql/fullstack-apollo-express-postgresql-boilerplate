@@ -23,10 +23,9 @@ export default gql`
 
   type Message {
     id: ID!
-    userId: String!
-    user: User!
     text: String!
     createdAt: String!
+    user: User!
   }
 
   extend type Subscription {
