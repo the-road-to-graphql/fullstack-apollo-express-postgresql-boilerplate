@@ -1,8 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { combineResolvers } from 'graphql-resolvers';
 
-import isAuthenticated from './authentication';
-import { isAdmin } from './authorization';
+import { isAuthenticated, isAdmin } from './authorization';
 
 const createToken = async (user, secret, expiresIn) => {
   const { id, email, role } = user;

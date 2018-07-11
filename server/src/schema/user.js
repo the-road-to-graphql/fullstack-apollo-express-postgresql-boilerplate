@@ -13,8 +13,8 @@ export default gql`
       email: String!
       password: String!
     ): Token!
-    signIn(login: String!, password: String!): Token!
 
+    signIn(login: String!, password: String!): Token!
     updateUser(username: String!): User!
     deleteUser(id: ID!): Boolean!
   }

@@ -24,7 +24,7 @@ app.use(async (req, res, next) => {
       req.me = me;
     } catch (e) {
       const error = 'Your session expired. Sign in again.';
-      res.status(401).json({ error });
+      res.status(403).json({ error });
     }
   }
 
@@ -57,8 +57,8 @@ const server = new ApolloServer({
     if (req) {
       return {
         models,
-        secret: process.env.SECRET,
         me: req.me,
+        secret: process.env.SECRET,
         userLoader: new DataLoader(keys =>
           loaders.batchUsers(keys, models),
         ),

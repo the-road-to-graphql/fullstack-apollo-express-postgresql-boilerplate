@@ -1,8 +1,7 @@
 import Sequelize from 'sequelize';
 import { combineResolvers } from 'graphql-resolvers';
 
-import isAuthenticated from './authentication';
-import { isMessageOwner } from './authorization';
+import { isAuthenticated, isMessageOwner } from './authorization';
 
 import pubsub, { EVENTS } from '../subscription';
 

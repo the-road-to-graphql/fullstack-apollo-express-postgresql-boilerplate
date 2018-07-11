@@ -1,6 +1,7 @@
 import { combineResolvers, skip } from 'graphql-resolvers';
 
-import isAuthenticated from './authentication';
+export const isAuthenticated = (parent, args, { me }) =>
+  me ? skip : new Error('NOT_AUTHENTICATED');
 
 export const isAdmin = combineResolvers(
   isAuthenticated,
