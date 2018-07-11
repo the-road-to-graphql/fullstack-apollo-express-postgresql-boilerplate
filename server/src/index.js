@@ -3,7 +3,10 @@ import cors from 'cors';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import DataLoader from 'dataloader';
-import { ApolloServer } from 'apollo-server-express';
+import {
+  ApolloServer,
+  AuthenticationError,
+} from 'apollo-server-express';
 
 import './env';
 import schema from './schema';
@@ -15,21 +18,19 @@ const app = express();
 
 app.use(cors());
 
-app.use(async (req, res, next) => {
+const getMe = async req => {
   const token = req.headers['x-token'];
 
   if (token) {
     try {
-      const me = await jwt.verify(token, process.env.SECRET);
-      req.me = me;
+      return await jwt.verify(token, process.env.SECRET);
     } catch (e) {
-      const error = 'Your session expired. Sign in again.';
-      res.status(403).json({ error });
+      throw new AuthenticationError(
+        'Your session expired. Sign in again.',
+      );
     }
   }
-
-  next();
-});
+};
 
 const server = new ApolloServer({
   typeDefs: schema,
@@ -44,7 +45,7 @@ const server = new ApolloServer({
       message,
     };
   },
-  context: ({ req, connection }) => {
+  context: async ({ req, connection }) => {
     if (connection) {
       return {
         models,
@@ -55,9 +56,11 @@ const server = new ApolloServer({
     }
 
     if (req) {
+      const me = await getMe(req);
+
       return {
         models,
-        me: req.me,
+        me,
         secret: process.env.SECRET,
         userLoader: new DataLoader(keys =>
           loaders.batchUsers(keys, models),
