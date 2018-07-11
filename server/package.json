@@ -14,7 +14,7 @@
   "dependencies": {
     "apollo-server": "^2.0.0-rc.7",
     "apollo-server-express": "^2.0.0-rc.7",
-    "bcrypt": "^2.0.1",
+    "bcrypt": "^3.0.0",
     "cors": "^2.8.4",
     "dataloader": "^1.4.0",
     "dotenv": "^6.0.0",
@@ -23,7 +23,7 @@
     "graphql-resolvers": "^0.2.2",
     "jsonwebtoken": "^8.3.0",
     "pg": "^7.4.3",
-    "sequelize": "^4.37.10"
+    "sequelize": "^4.38.0"
   },
   "devDependencies": {
     "axios": "^0.18.0",
@@ -32,6 +32,6 @@
     "babel-preset-stage-2": "^6.24.1",
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
-    "nodemon": "^1.17.5"
+    "nodemon": "^1.18.0"
   }
 }
