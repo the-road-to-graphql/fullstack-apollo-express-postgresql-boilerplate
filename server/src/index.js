@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import DataLoader from 'dataloader';
 import { ApolloServer } from 'apollo-server-express';
 import { AuthenticationError } from 'apollo-server';
+
 import schema from './schema';
 import resolvers from './resolvers';
 import models, { sequelize } from './models';
