@@ -177,7 +177,7 @@ describe('users', () => {
         data: { errors },
       } = await deleteUserApi(token, '1');
 
-      expect(errors[0].message).to.eql('NOT_AUTHORIZED_AS_ADMIN');
+      expect(errors[0].message).to.eql('Not authorized as admin.');
     });
   });
 
@@ -187,7 +187,7 @@ describe('users', () => {
         data: { errors },
       } = await updateUserWithoutTokenApi('foo');
 
-      expect(errors[0].message).to.eql('NOT_AUTHENTICATED');
+      expect(errors[0].message).to.eql('Not authenticated as user.');
     });
   });
 

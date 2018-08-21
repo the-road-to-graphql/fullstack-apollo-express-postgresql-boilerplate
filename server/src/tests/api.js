@@ -54,7 +54,7 @@ export const meApiWithoutToken = async () =>
 export const userApi = async id =>
   axios.post(API_URL, {
     query: `
-      query ($id: String!) {
+      query ($id: ID!) {
         user(id: $id) {
           id
           username
@@ -147,7 +147,7 @@ export const deleteUserApi = async (token, id) =>
     API_URL,
     {
       query: `
-        mutation ($id: String!) {
+        mutation ($id: ID!) {
           deleteUser(id: $id)
         }
       `,
