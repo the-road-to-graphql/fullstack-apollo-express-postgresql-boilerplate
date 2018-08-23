@@ -1,3 +1,3 @@
-import { batchUsers } from './user';
+import * as user from './user';
 
-export { batchUsers };
+export default { user };

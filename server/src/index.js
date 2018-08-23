@@ -10,7 +10,7 @@ import { AuthenticationError } from 'apollo-server';
 import schema from './schema';
 import resolvers from './resolvers';
 import models, { sequelize } from './models';
-import * as loaders from './loaders';
+import loaders from './loaders';
 
 const app = express();
 
@@ -47,9 +47,6 @@ const server = new ApolloServer({
     if (connection) {
       return {
         models,
-        userLoader: new DataLoader(keys =>
-          loaders.batchUsers(keys, models),
-        ),
       };
     }
 
@@ -60,9 +57,11 @@ const server = new ApolloServer({
         models,
         me,
         secret: process.env.SECRET,
-        userLoader: new DataLoader(keys =>
-          loaders.batchUsers(keys, models),
-        ),
+        loaders: {
+          user: new DataLoader(keys =>
+            loaders.user.batchUsers(keys, models),
+          ),
+        },
       };
     }
   },

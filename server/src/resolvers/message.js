@@ -73,8 +73,8 @@ export default {
   },
 
   Message: {
-    user: async (message, args, { userLoader }) =>
-      await userLoader.load(message.userId),
+    user: async (message, args, { loaders }) =>
+      await loaders.user.load(message.userId),
   },
 
   Subscription: {
