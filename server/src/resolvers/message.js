@@ -56,7 +56,7 @@ export default {
           userId: me.id,
         });
 
-        pubsub.publish(EVENTS.MESSAGE_CREATED, {
+        pubsub.publish(EVENTS.MESSAGE.CREATED, {
           messageCreated: { message },
         });
 
@@ -79,7 +79,7 @@ export default {
 
   Subscription: {
     messageCreated: {
-      subscribe: () => pubsub.asyncIterator(EVENTS.MESSAGE_CREATED),
+      subscribe: () => pubsub.asyncIterator(EVENTS.MESSAGE.CREATED),
     },
   },
 };
