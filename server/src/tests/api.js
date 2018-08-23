@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8000/graphql';
 
-export const signInApi = async (login, password) =>
+export const signIn = async variables =>
   await axios.post(API_URL, {
     query: `
       mutation ($login: String!, $password: String!) {
@@ -11,13 +11,10 @@ export const signInApi = async (login, password) =>
         }
       }
     `,
-    variables: {
-      login,
-      password,
-    },
+    variables,
   });
 
-export const meApi = async token =>
+export const me = async token =>
   await axios.post(
     API_URL,
     {
@@ -31,27 +28,16 @@ export const meApi = async token =>
         }
       `,
     },
-    {
-      headers: {
-        'x-token': token,
-      },
-    },
+    token
+      ? {
+          headers: {
+            'x-token': token,
+          },
+        }
+      : null,
   );
 
-export const meApiWithoutToken = async () =>
-  await axios.post(API_URL, {
-    query: `
-      {
-        me {
-          id
-          email
-          username
-        }
-      }
-    `,
-  });
-
-export const userApi = async id =>
+export const user = async variables =>
   axios.post(API_URL, {
     query: `
       query ($id: ID!) {
@@ -63,12 +49,10 @@ export const userApi = async id =>
         }
       }
     `,
-    variables: {
-      id,
-    },
+    variables,
   });
 
-export const usersApi = async () =>
+export const users = async () =>
   axios.post(API_URL, {
     query: `
       {
@@ -82,7 +66,7 @@ export const usersApi = async () =>
     `,
   });
 
-export const signUpApi = async (username, email, password) =>
+export const signUp = async variables =>
   axios.post(API_URL, {
     query: `
       mutation(
@@ -99,28 +83,10 @@ export const signUpApi = async (username, email, password) =>
         }
       }
     `,
-    variables: {
-      username,
-      email,
-      password,
-    },
+    variables,
   });
 
-export const updateUserWithoutTokenApi = async username =>
-  axios.post(API_URL, {
-    query: `
-      mutation ($username: String!) {
-        updateUser(username: $username) {
-          username
-        }
-      }
-    `,
-    variables: {
-      username,
-    },
-  });
-
-export const updateUserApi = async (token, username) =>
+export const updateUser = async (variables, token) =>
   axios.post(
     API_URL,
     {
@@ -131,18 +97,18 @@ export const updateUserApi = async (token, username) =>
           }
         }
       `,
-      variables: {
-        username,
-      },
+      variables,
     },
-    {
-      headers: {
-        'x-token': token,
-      },
-    },
+    token
+      ? {
+          headers: {
+            'x-token': token,
+          },
+        }
+      : null,
   );
 
-export const deleteUserApi = async (token, id) =>
+export const deleteUser = async (variables, token) =>
   axios.post(
     API_URL,
     {
@@ -151,13 +117,13 @@ export const deleteUserApi = async (token, id) =>
           deleteUser(id: $id)
         }
       `,
-      variables: {
-        id,
-      },
+      variables,
     },
-    {
-      headers: {
-        'x-token': token,
-      },
-    },
+    token
+      ? {
+          headers: {
+            'x-token': token,
+          },
+        }
+      : null,
   );

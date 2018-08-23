@@ -1,16 +1,6 @@
 import { expect } from 'chai';
 
-import {
-  signInApi,
-  meApi,
-  meApiWithoutToken,
-  userApi,
-  usersApi,
-  signUpApi,
-  updateUserApi,
-  updateUserWithoutTokenApi,
-  deleteUserApi,
-} from './api';
+import * as userApi from './api';
 
 describe('users', () => {
   describe('user(id: String!): User', () => {
@@ -26,7 +16,7 @@ describe('users', () => {
         },
       };
 
-      const result = await userApi('1');
+      const result = await userApi.user({ id: '1' });
 
       expect(result.data).to.eql(expectedResult);
     });
@@ -38,7 +28,7 @@ describe('users', () => {
         },
       };
 
-      const result = await userApi('42');
+      const result = await userApi.user({ id: '42' });
 
       expect(result.data).to.eql(expectedResult);
     });
@@ -65,7 +55,7 @@ describe('users', () => {
         },
       };
 
-      const result = await usersApi();
+      const result = await userApi.users();
 
       expect(result.data).to.eql(expectedResult);
     });
@@ -79,7 +69,7 @@ describe('users', () => {
         },
       };
 
-      const { data } = await meApiWithoutToken();
+      const { data } = await userApi.me();
 
       expect(data).to.eql(expectedResult);
     });
@@ -101,9 +91,12 @@ describe('users', () => {
             signIn: { token },
           },
         },
-      } = await signInApi('rwieruch', 'rwieruch');
+      } = await userApi.signIn({
+        login: 'rwieruch',
+        password: 'rwieruch',
+      });
 
-      const { data } = await meApi(token);
+      const { data } = await userApi.me(token);
 
       expect(data).to.eql(expectedResult);
     });
@@ -119,18 +112,22 @@ describe('users', () => {
             signUp: { token },
           },
         },
-      } = await signUpApi('bar', 'foo@bar.com', 'asdasdasd');
+      } = await userApi.signUp({
+        username: 'Mark',
+        email: 'mark@gmule.com',
+        password: 'asdasdasd',
+      });
 
       const {
         data: {
           data: { me },
         },
-      } = await meApi(token);
+      } = await userApi.me(token);
 
       expect(me).to.eql({
         id: '3',
-        username: 'bar',
-        email: 'foo@bar.com',
+        username: 'Mark',
+        email: 'mark@gmule.com',
       });
 
       // update as user
@@ -139,9 +136,9 @@ describe('users', () => {
         data: {
           data: { updateUser },
         },
-      } = await updateUserApi(token, 'foo');
+      } = await userApi.updateUser({ username: 'Mark' }, token);
 
-      expect(updateUser.username).to.eql('foo');
+      expect(updateUser.username).to.eql('Mark');
 
       // delete as admin
 
@@ -151,13 +148,16 @@ describe('users', () => {
             signIn: { token: adminToken },
           },
         },
-      } = await signInApi('rwieruch', 'rwieruch');
+      } = await userApi.signIn({
+        login: 'rwieruch',
+        password: 'rwieruch',
+      });
 
       const {
         data: {
           data: { deleteUser },
         },
-      } = await deleteUserApi(adminToken, me.id);
+      } = await userApi.deleteUser({ id: me.id }, adminToken);
 
       expect(deleteUser).to.eql(true);
     });
@@ -171,11 +171,14 @@ describe('users', () => {
             signIn: { token },
           },
         },
-      } = await signInApi('ddavids', 'ddavids');
+      } = await userApi.signIn({
+        login: 'ddavids',
+        password: 'ddavids',
+      });
 
       const {
         data: { errors },
-      } = await deleteUserApi(token, '1');
+      } = await userApi.deleteUser({ id: '1' }, token);
 
       expect(errors[0].message).to.eql('Not authorized as admin.');
     });
@@ -185,7 +188,7 @@ describe('users', () => {
     it('returns an error because only authenticated users can update a user', async () => {
       const {
         data: { errors },
-      } = await updateUserWithoutTokenApi('foo');
+      } = await userApi.updateUser({ username: 'Mark' });
 
       expect(errors[0].message).to.eql('Not authenticated as user.');
     });
@@ -199,7 +202,10 @@ describe('users', () => {
             signIn: { token },
           },
         },
-      } = await signInApi('ddavids', 'ddavids');
+      } = await userApi.signIn({
+        login: 'ddavids',
+        password: 'ddavids',
+      });
 
       expect(token).to.be.a('string');
     });
@@ -211,7 +217,10 @@ describe('users', () => {
             signIn: { token },
           },
         },
-      } = await signInApi('hello@david.com', 'ddavids');
+      } = await userApi.signIn({
+        login: 'hello@david.com',
+        password: 'ddavids',
+      });
 
       expect(token).to.be.a('string');
     });
@@ -219,7 +228,10 @@ describe('users', () => {
     it('returns an error when a user provides a wrong password', async () => {
       const {
         data: { errors },
-      } = await signInApi('ddavids', 'foo');
+      } = await userApi.signIn({
+        login: 'ddavids',
+        password: 'dontknow',
+      });
 
       expect(errors[0].message).to.eql('Invalid password.');
     });
@@ -228,7 +240,10 @@ describe('users', () => {
   it('returns an error when a user is not found', async () => {
     const {
       data: { errors },
-    } = await signInApi('foo', 'ddavids');
+    } = await userApi.signIn({
+      login: 'dontknow',
+      password: 'ddavids',
+    });
 
     expect(errors[0].message).to.eql(
       'No user found with this login credentials.',
