@@ -1,16 +1,16 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import withSession from '../Session/withSession';
 
 import { MessageCreate, Messages } from '../Message';
 
 const Landing = ({ session }) => (
-  <Fragment>
-    <h2>Feed</h2>
+  <div>
+    <h2>Landing Page</h2>
 
     {session && session.me && <MessageCreate />}
     <Messages me={session.me} limit={2} />
-  </Fragment>
+  </div>
 );
 
 export default withSession(Landing);
