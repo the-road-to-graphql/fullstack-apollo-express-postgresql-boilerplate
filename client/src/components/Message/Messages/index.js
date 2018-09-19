@@ -48,6 +48,15 @@ const Messages = ({ limit, me }) => (
     variables={{ limit }}
   >
     {({ data, loading, error, fetchMore, subscribeToMore }) => {
+      if (!data) {
+        return (
+          <div>
+            There are no messages yet ... Try to create one by
+            yourself.
+          </div>
+        );
+      }
+
       const { messages } = data;
 
       if (loading || !messages) {

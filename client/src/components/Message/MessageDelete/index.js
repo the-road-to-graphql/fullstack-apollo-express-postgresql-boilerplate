@@ -22,7 +22,7 @@ const GET_ALL_MESSAGES_WITH_USERS = gql`
 `;
 
 const DELETE_MESSAGE = gql`
-  mutation($id: String!) {
+  mutation($id: ID!) {
     deleteMessage(id: $id)
   }
 `;
