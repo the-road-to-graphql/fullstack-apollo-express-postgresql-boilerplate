@@ -4,13 +4,15 @@ import withSession from '../Session/withSession';
 
 import { MessageCreate, Messages } from '../Message';
 
-const Landing = ({ session }) => (
-  <div>
-    <h2>Landing Page</h2>
-
-    {session && session.me && <MessageCreate />}
-    <Messages me={session.me} limit={2} />
-  </div>
-);
+const Landing = ({ session }) => {
+  console.log('session: ',session)
+  return(
+    <div>
+      <h2>Landing Page</h2>
+      {session && session.me && <MessageCreate />}
+      <Messages me={session.me} limit={2} />
+    </div>
+  )
+};
 
 export default withSession(Landing);

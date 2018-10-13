@@ -41,7 +41,8 @@ class SignInForm extends Component {
       this.setState({ ...INITIAL_STATE });
 
       localStorage.setItem('token', data.signIn.token);
-
+      // console.log('data: ',data)
+      // console.log('props: ', this.props)
       await this.props.refetch();
 
       this.props.history.push(routes.LANDING);
