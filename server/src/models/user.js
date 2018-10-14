@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 const user = (sequelize, DataTypes) => {
   const User = sequelize.define('user', {
