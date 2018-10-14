@@ -21,7 +21,7 @@ const getMe = async req => {
 
   if (token && token !== 'null') {
     try {
-      return await jwt.verify(token, process.env.SECRET);
+      return await jwt.verify(token, process.env.TOKEN_SECRET);
     } catch (e) {
       throw new AuthenticationError(
         'Your session expired. Sign in again.',
@@ -61,7 +61,7 @@ const server = new ApolloServer({
       return {
         models,
         me,
-        secret: process.env.SECRET,
+        secret: process.env.TOKEN_SECRET,
         loaders: {
           user: new DataLoader(keys =>
             loaders.user.batchUsers(keys, models),
