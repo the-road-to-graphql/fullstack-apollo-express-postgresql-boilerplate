@@ -27,7 +27,7 @@ A full-fledged Apollo Server 2 with Apollo Client 2 starter project with React, 
 
 ## Installation
 
-* `git clone git@github.com:rwieruch/fullstack-apollo-react-express-boilerplate-project.git`
+* `git clone git@github.com:the-road-to-graphql/fullstack-apollo-react-express-boilerplate-project.git`
 * `cd fullstack-apollo-react-express-boilerplate-project`
 
 ### Client
