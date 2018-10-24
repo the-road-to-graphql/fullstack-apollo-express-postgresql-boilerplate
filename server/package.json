@@ -12,26 +12,26 @@
   "author": "“Robin <hello@rwieruch.com”> (https://www.robinwieruch.de)",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^2.0.0-rc.7",
-    "apollo-server-express": "^2.0.0-rc.7",
-    "bcrypt": "^3.0.0",
+    "apollo-server": "^2.1.0",
+    "apollo-server-express": "^2.1.0",
+    "bcrypt": "^3.0.2",
     "cors": "^2.8.4",
     "dataloader": "^1.4.0",
-    "dotenv": "^6.0.0",
-    "express": "^4.16.3",
-    "graphql": "^14.0.0-rc.2",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "graphql": "^14.0.2",
     "graphql-resolvers": "^0.2.2",
     "jsonwebtoken": "^8.3.0",
-    "pg": "^7.4.3",
-    "sequelize": "^4.38.0"
+    "pg": "^7.5.0",
+    "sequelize": "^4.41.0"
   },
   "devDependencies": {
     "axios": "^0.18.0",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-2": "^6.24.1",
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "mocha": "^5.2.0",
-    "nodemon": "^1.18.0"
+    "nodemon": "^1.18.4"
   }
 }
