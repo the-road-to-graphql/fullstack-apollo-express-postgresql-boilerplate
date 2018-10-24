@@ -36,12 +36,14 @@ const terminatingLink = split(
 );
 
 const authLink = new ApolloLink((operation, forward) => {
-  operation.setContext(({ headers = {} }) => ({
-    headers: {
-      ...headers,
-      'x-token': localStorage.getItem('token'),
-    },
-  }));
+  operation.setContext(({ headers = {}, localToken = localStorage.getItem('token') }) => {
+    if (localToken) {
+      headers['x-token'] = localToken;
+    }
+    return {
+      headers
+    }
+  });
 
   return forward(operation);
 });
