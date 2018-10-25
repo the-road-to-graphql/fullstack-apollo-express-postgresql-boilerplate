@@ -1,4 +1,14 @@
+import { GraphQLDateTime } from 'graphql-iso-date';
+
 import userResolvers from '../resolvers/user';
 import messageResolvers from '../resolvers/message';
 
-export default [userResolvers, messageResolvers];
+const customScalarResolver = {
+  Date: GraphQLDateTime,
+};
+
+export default [
+  customScalarResolver,
+  userResolvers,
+  messageResolvers,
+];
