@@ -1,11 +1,13 @@
 import 'dotenv/config';
-import http from 'http';
 import cors from 'cors';
-import express from 'express';
+import http from 'http';
 import jwt from 'jsonwebtoken';
 import DataLoader from 'dataloader';
-import { ApolloServer } from 'apollo-server-express';
-import { AuthenticationError } from 'apollo-server';
+import express from 'express';
+import {
+  ApolloServer,
+  AuthenticationError,
+} from 'apollo-server-express';
 
 import schema from './schema';
 import resolvers from './resolvers';
@@ -34,6 +36,8 @@ const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
   formatError: error => {
+    // remove the internal sequelize error message
+    // leave only the important validation error
     const message = error.message
       .replace('SequelizeValidationError: ', '')
       .replace('Validation error: ', '');
@@ -117,11 +121,11 @@ const createUsersWithMessages = async date => {
       password: 'ddavids',
       messages: [
         {
-          text: 'Happy to release a GraphQL in React tutorial',
+          text: 'Happy to release ...',
           createdAt: date.setSeconds(date.getSeconds() + 1),
         },
         {
-          text: 'A complete React with Apollo and GraphQL Tutorial',
+          text: 'Published a complete ...',
           createdAt: date.setSeconds(date.getSeconds() + 1),
         },
       ],
