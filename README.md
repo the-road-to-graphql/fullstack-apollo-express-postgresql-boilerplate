@@ -52,7 +52,6 @@ Since this boilerplate project is using PostgreSQL, you have to install it for y
 
 ```
 DATABASE=mydatabase
-TEST_DATABASE=mytestdatabase
 
 DATABASE_USER=postgres
 DATABASE_PASSWORD=postgres
