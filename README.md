@@ -1,16 +1,18 @@
-# fullstack-apollo-react-express-boilerplate-project
+# fullstack-apollo-express-postgresql-boilerplate
 
-[![Slack](https://slack-the-road-to-learn-react.wieruch.com/badge.svg)](https://slack-the-road-to-learn-react.wieruch.com/)
+[![Build Status](https://travis-ci.org/the-road-to-graphql/fullstack-apollo-express-postgresql-boilerplate.svg?branch=master)](https://travis-ci.org/the-road-to-graphql/fullstack-apollo-express-postgresql-boilerplate) [![Slack](https://slack-the-road-to-learn-react.wieruch.com/badge.svg)](https://slack-the-road-to-learn-react.wieruch.com/)
 
-A full-fledged Apollo Server 2 with Apollo Client 2 starter project with React, Express and PostgreSQL.
+A full-fledged Apollo Server with Apollo Client starter project with React and Express. [Read more about it in this tutorial to build it yourself](https://www.robinwieruch.de/graphql-apollo-server-tutorial/).
 
-[GraphQL Server Tutorial](https://www.robinwieruch.de/graphql-apollo-server-tutorial/)
+**This repository is the fullstack Apollo Server with Express and PostgreSQL project. You can find a working client application that can be used with this server in the list below:**
 
-## Features
+* [React Client](https://github.com/the-road-to-graphql/fullstack-apollo-react-boilerplate)
 
-* React (create-react-app) with Apollo Client 2
+## Features of Client + Server
+
+* React (create-react-app) with Apollo Client
   * Queries, Mutations, Subscriptions
-* Node.js with Express and Apollo Server 2
+* Node.js with Express and Apollo Server
   * cursor-based Pagination
 * PostgreSQL Database with Sequelize
   * entities: users, messages
@@ -27,19 +29,8 @@ A full-fledged Apollo Server 2 with Apollo Client 2 starter project with React, 
 
 ## Installation
 
-* `git clone git@github.com:the-road-to-graphql/fullstack-apollo-react-express-boilerplate-project.git`
-* `cd fullstack-apollo-react-express-boilerplate-project`
-
-### Client
-
-* `cd client`
-* `npm install`
-* `npm start`
-* visit `http://localhost:3000`
-
-### Server
-
-* `cd server`
+* `git clone git@github.com:the-road-to-graphql/fullstack-apollo-express-postgresql-boilerplate.git`
+* `cd fullstack-apollo-express-postgresql-boilerplate`
 * `touch .env`
 * `npm install`
 * fill out *.env file* (see below)
