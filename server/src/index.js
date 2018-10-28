@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import cors from 'cors';
+import morgan from 'morgan';
 import http from 'http';
 import jwt from 'jsonwebtoken';
 import DataLoader from 'dataloader';
@@ -17,6 +18,8 @@ import loaders from './loaders';
 const app = express();
 
 app.use(cors());
+
+app.use(morgan('dev'));
 
 const getMe = async req => {
   const token = req.headers['x-token'];

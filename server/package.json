@@ -22,7 +22,8 @@
     "axios": "^0.18.0",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
-    "nodemon": "^1.18.4"
+    "nodemon": "^1.18.4",
+    "morgan": "^1.9.1"
   },
   "dependencies": {
     "apollo-server": "^2.1.0",
