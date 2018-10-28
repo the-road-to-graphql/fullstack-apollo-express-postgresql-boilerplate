@@ -8,8 +8,9 @@
   },
   "scripts": {
     "start": "nodemon --exec babel-node src/index.js",
-    "test-server": "TEST_DATABASE=mytestdatabase npm start",
-    "test": "mocha --require @babel/register 'src/**/*.spec.js'"
+    "test:run-server": "TEST_DATABASE=mytestdatabase npm start",
+    "test:execute-test": "mocha --require @babel/register 'src/**/*.spec.js'",
+    "test": "echo \"No test specified\" && exit 0"
   },
   "keywords": [],
   "author": "Robin Wieruch <hello@rwieruch.com> (https://www.robinwieruch.de)",
