@@ -1,32 +1,22 @@
-import Sequelize from 'sequelize';
+import UserModel from './user';
+import MessageModel from './message';
+import mongoose from 'mongoose';
 
-let sequelize;
-if (process.env.DATABASE_URL) {
-  sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialect: 'postgres',
-  });
-} else {
-  sequelize = new Sequelize(
-    process.env.TEST_DATABASE || process.env.DATABASE,
-    process.env.DATABASE_USER,
-    process.env.DATABASE_PASSWORD,
-    {
-      dialect: 'postgres',
-    },
-  );
+
+export function connectDb () {
+  if(process.env.DATABASE_URL) {
+    return mongoose.connect(process.env.DATABASE_URL)
+  }
+  if (process.env.TEST_DATABASE) {
+    return mongoose.connect(`mongodb://localhost:27017/${process.env.TEST_DATABASE}`)
+  }
+/*   if(process.env.DATABASE_USER && process.env.DATABASE_PASSWORD) {
+    return mongoose.connect(`mongodb:${process.env.DATABASE_USER}@${process.env.DATABASE_PASSWORD}//localhost:27017/${process.env.DATABASE}`)
+  } */
+  return mongoose.connect(process.env.MongoUri)
 }
 
-const models = {
-  User: sequelize.import('./user'),
-  Message: sequelize.import('./message'),
+export default {
+  User: UserModel,
+  Message: MessageModel
 };
-
-Object.keys(models).forEach(key => {
-  if ('associate' in models[key]) {
-    models[key].associate(models);
-  }
-});
-
-export { sequelize };
-
-export default models;

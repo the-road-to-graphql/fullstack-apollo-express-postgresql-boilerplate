@@ -14,7 +14,7 @@ const createToken = async (user, secret, expiresIn) => {
 export default {
   Query: {
     users: async (parent, args, { models }) => {
-      return await models.User.findAll();
+      return await models.User.find();
     },
     user: async (parent, { id }, { models }) => {
       return await models.User.findById(id);
@@ -68,27 +68,23 @@ export default {
     updateUser: combineResolvers(
       isAuthenticated,
       async (parent, { username }, { models, me }) => {
-        const user = await models.User.findById(me.id);
-        return await user.update({ username });
+        console.log({models: models, me})
+        return  await models.User.findByIdAndUpdate(me.id, { username: username}, {new: true});
       },
     ),
 
     deleteUser: combineResolvers(
       isAdmin,
       async (parent, { id }, { models }) => {
-        return await models.User.destroy({
-          where: { id },
-        });
+        return await models.User.findByIdAndRemove(id).then(() => true)
       },
     ),
   },
 
   User: {
     messages: async (user, args, { models }) => {
-      return await models.Message.findAll({
-        where: {
+      return await models.Message.find({
           userId: user.id,
-        },
       });
     },
   },

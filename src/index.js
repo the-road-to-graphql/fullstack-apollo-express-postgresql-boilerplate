@@ -12,7 +12,7 @@ import {
 
 import schema from './schema';
 import resolvers from './resolvers';
-import models, { sequelize } from './models';
+import models, { connectDb } from './models';
 import loaders from './loaders';
 
 const app = express();
@@ -89,8 +89,10 @@ const isTest = !!process.env.TEST_DATABASE;
 const isProduction = !!process.env.DATABASE_URL;
 const port = process.env.PORT || 8000;
 
-sequelize.sync({ force: isTest || isProduction }).then(async () => {
+connectDb().then(async () => {
   if (isTest || isProduction) {
+    // resetDb
+    await Promise.all([models.User.remove({}), models.Message.remove({})]);
     createUsersWithMessages(new Date());
   }
 
@@ -100,42 +102,45 @@ sequelize.sync({ force: isTest || isProduction }).then(async () => {
 });
 
 const createUsersWithMessages = async date => {
-  await models.User.create(
+  try {
+  const user1 = await models.User.create(
     {
       username: 'rwieruch',
       email: 'hello@robin.com',
       password: 'rwieruch',
       role: 'ADMIN',
-      messages: [
-        {
+
+    },
+  ).then(createdUser => {
+      return models.Message.create({
           text: 'Published the Road to learn React',
           createdAt: date.setSeconds(date.getSeconds() + 1),
-        },
-      ],
-    },
-    {
-      include: [models.Message],
-    },
-  );
+          userId: createdUser._id
+      })
+  })
+  
 
-  await models.User.create(
+const user2 = await models.User.create(
     {
       username: 'ddavids',
       email: 'hello@david.com',
       password: 'ddavids',
-      messages: [
-        {
+    },
+  ).then(createdUser => {
+      return models.Message.create({
           text: 'Happy to release ...',
           createdAt: date.setSeconds(date.getSeconds() + 1),
+          userId: createdUser._id
         },
         {
           text: 'Published a complete ...',
           createdAt: date.setSeconds(date.getSeconds() + 1),
+          userId: createdUser._id
         },
-      ],
-    },
-    {
-      include: [models.Message],
-    },
-  );
+)
+  });
+  } catch (e) {
+    console.log(e)
+    throw e
+  }
 };

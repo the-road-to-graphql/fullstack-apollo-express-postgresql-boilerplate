@@ -48,6 +48,8 @@ DATABASE_USER=postgres
 DATABASE_PASSWORD=postgres
 
 SECRET=asdlplplfwfwefwekwself.2342.dawasdq
+
+MongoUri=mongodb://localhost:27017/mydatabase
 ```
 
 The `SECRET` is just a random string for your authentication. Keep all these information secure by adding the *.env* file to your *.gitignore* file. No third-party should have access to this information.

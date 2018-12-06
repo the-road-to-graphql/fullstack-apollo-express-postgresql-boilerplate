@@ -1,4 +1,3 @@
-import Sequelize from 'sequelize';
 import { combineResolvers } from 'graphql-resolvers';
 
 import pubsub, { EVENTS } from '../subscription';
@@ -11,21 +10,18 @@ const fromCursorHash = string =>
 
 export default {
   Query: {
-    messages: async (parent, { cursor, limit = 100 }, { models }) => {
+    messages: async (parent, { cursor, limit = 2 }, { models }) => {
       const cursorOptions = cursor
         ? {
-            where: {
               createdAt: {
-                [Sequelize.Op.lt]: fromCursorHash(cursor),
+                $lt: fromCursorHash(cursor),
               },
-            },
           }
         : {};
-
-      const messages = await models.Message.findAll({
-        order: [['createdAt', 'DESC']],
+          console.log(cursorOptions)
+      const messages = await models.Message.find(cursorOptions, null, {
+        sort: { createdAt: -1 },
         limit: limit + 1,
-        ...cursorOptions,
       });
 
       const hasNextPage = messages.length > limit;
@@ -67,7 +63,7 @@ export default {
       isAuthenticated,
       isMessageOwner,
       async (parent, { id }, { models }) => {
-        return await models.Message.destroy({ where: { id } });
+        return await models.Message.findByIdAndRemove(id);
       },
     ),
   },
