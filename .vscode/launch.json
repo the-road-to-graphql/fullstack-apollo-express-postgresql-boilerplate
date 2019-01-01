@@ -1,0 +1,27 @@
+{
+  // Usare IntelliSense per informazioni sui possibili attributi.
+  // Al passaggio del mouse vengono visualizzate le descrizioni degli attributi esistenti.
+  // Per ulteriori informazioni, visitare: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Avvia programma",
+      "program": "${workspaceFolder}/src/index.js",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
+      "runtimeArgs": ["--nolazy"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Avvia test",
+      "program": "${workspaceFolder}/src/index.js",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/mocha",
+      "runtimeArgs": ["--require", "@babel/register", "src/**/*.spec.js", "--timeout", "15000"],
+      "env": {
+        "IS_TEST": "true"
+      }
+    }
+  ]
+}

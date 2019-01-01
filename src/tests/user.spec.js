@@ -1,8 +1,15 @@
 import { expect } from 'chai';
 
+import setup from './setup';
 import * as userApi from './api';
 
 describe('users', () => {
+  // start server and seed test database
+  before(async () => await setup({eraseDatabaseOnSync: true}));
+
+  // stop server at the end of tests
+  after(() => process.exit(0));
+  
   describe('user(id: String!): User', () => {
     it('returns a user when user can be found', async () => {
       const expectedResult = {
