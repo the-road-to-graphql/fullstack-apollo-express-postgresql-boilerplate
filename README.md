@@ -4,7 +4,14 @@
 
 A full-fledged Apollo Server with Apollo Client starter project with React and Express. [Read more about it in this tutorial to build it yourself](https://www.robinwieruch.de/graphql-apollo-server-tutorial/).
 
-**This repository is the fullstack Apollo Server with Express and PostgreSQL project. You can find a working client application that can be used with this server in the list below:**
+**Family of universal fullstack repositories:**
+
+Server Applications:
+
+* [Node.js with Express + MongoDB](https://github.com/the-road-to-graphql/fullstack-apollo-express-mongodb-boilerplate)
+* [Node.js with Express + PostgreSQL](https://github.com/the-road-to-graphql/fullstack-apollo-express-postgresql-boilerplate)
+
+Client Applications:
 
 * [React Client](https://github.com/the-road-to-graphql/fullstack-apollo-react-boilerplate)
 
