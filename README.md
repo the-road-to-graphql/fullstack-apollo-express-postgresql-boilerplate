@@ -41,8 +41,9 @@ Client Applications:
 * `touch .env`
 * `npm install`
 * fill out *.env file* (see below)
+* start PostgreSQL database
 * `npm start`
-* optional visit `http://localhost:8000` for GraphQL playground
+* visit `http://localhost:8000` for GraphQL playground
 
 #### .env file
 
