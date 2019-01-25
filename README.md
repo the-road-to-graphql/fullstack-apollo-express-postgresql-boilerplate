@@ -65,7 +65,7 @@ The `SECRET` is just a random string for your authentication. Keep all these inf
 * adjust `test:run-server` npm script with `TEST_DATABASE` environment variable in package.json to match your testing database name
   * to match it from package.json: `createdb mytestdatabase` with psql
 * one terminal: npm run test:run-server
-* second terminal: test:execute-test
+* second terminal: npm run test:execute-test
 
 ## Want to learn more about React + GraphQL + Apollo?
 
