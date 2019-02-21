@@ -42,19 +42,24 @@ Client Applications:
 * `npm install`
 * fill out *.env file* (see below)
 * start PostgreSQL database
-* `npm start`
+* `npm run dev`
 * visit `http://localhost:8000` for GraphQL playground
+
+## Deployment
+
+Since we use modern javascript syntax, we need to perform a build step before
+deploying to production. The compiled API is put in `lib/`.
+
+* provision postgres database
+* `npm run build`
+* `npm start`
 
 #### .env file
 
 Since this boilerplate project is using PostgreSQL, you have to install it for your machine and get a database up and running. You find everything for the set up over here: [Setup PostgreSQL with Sequelize in Express Tutorial](https://www.robinwieruch.de/postgres-express-setup-tutorial). After you have created a database and a database user, you can fill out the environment variables in the *server/.env* file.
 
 ```
-DATABASE=mydatabase
-
-DATABASE_USER=postgres
-DATABASE_PASSWORD=postgres
-
+DATABASE_URL=postgres://username:password@localhost:5432/mydatabase
 SECRET=asdlplplfwfwefwekwself.2342.dawasdq
 ```
 
