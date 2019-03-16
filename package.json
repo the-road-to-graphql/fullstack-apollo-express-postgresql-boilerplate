@@ -23,8 +23,7 @@
     "axios": "^0.18.0",
     "chai": "^4.2.0",
     "mocha": "^6.0.2",
-    "nodemon": "^1.18.10",
-    "morgan": "^1.9.1"
+    "nodemon": "^1.18.10"
   },
   "dependencies": {
     "apollo-server": "^2.4.8",
@@ -38,6 +37,7 @@
     "graphql-iso-date": "^3.6.1",
     "graphql-resolvers": "^0.3.2",
     "jsonwebtoken": "^8.5.0",
+    "morgan": "^1.9.1",
     "pg": "^7.9.0",
     "sequelize": "^4.43.0",
     "uuid": "^3.3.2"
