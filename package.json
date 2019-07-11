@@ -27,7 +27,7 @@
     "morgan": "^1.9.1"
   },
   "dependencies": {
-    "apollo-server": "^2.2.3",
+    "apollo-server": "^2.6.9",
     "apollo-server-express": "^2.6.9",
     "bcrypt": "^3.0.2",
     "cors": "^2.8.5",
