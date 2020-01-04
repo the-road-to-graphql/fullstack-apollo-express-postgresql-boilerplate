@@ -7,10 +7,10 @@
     "node": "10.11.0"
   },
   "scripts": {
-    "start": "nodemon --exec babel-node src/index.js",
+    "start": "nodemon --exec babel-node src/index.js --ignore src/tests/ || true",
     "test:run-server": "TEST_DATABASE=mytestdatabase npm start",
-    "test:execute-test": "mocha --require @babel/register 'src/**/*.spec.js'",
-    "test": "echo \"No test specified\" && exit 0"
+    "test:execute-test": "wait-on tcp:8000 && mocha --require @babel/register 'src/**/*.spec.js'",
+    "test": "run-p -r test:run-server test:execute-test"
   },
   "keywords": [],
   "author": "Robin Wieruch <hello@rwieruch.com> (https://www.robinwieruch.de)",
@@ -24,7 +24,9 @@
     "chai": "4.2.0",
     "mocha": "6.2.2",
     "nodemon": "2.0.2",
-    "morgan": "1.9.1"
+    "npm-run-all": "4.1.5",
+    "morgan": "1.9.1",
+    "wait-on": "3.3.0"
   },
   "dependencies": {
     "apollo-server": "2.9.15",
