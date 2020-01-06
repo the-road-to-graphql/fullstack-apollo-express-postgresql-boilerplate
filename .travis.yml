@@ -3,8 +3,14 @@ language: node_js
 node_js:
   - stable
 
+before_install:
+  - psql -c 'create database mytestdatabase;' -U postgres
+
 install:
   - npm install
 
 script:
   - npm test
+
+services:
+  - postgresql
