@@ -19,7 +19,7 @@
     "@babel/core": "^7.8.0",
     "@babel/node": "^7.8.0",
     "@babel/preset-env": "^7.8.2",
-    "@babel/register": "^7.0.0",
+    "@babel/register": "^7.8.0",
     "axios": "^0.18.0",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
