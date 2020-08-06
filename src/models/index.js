@@ -21,11 +21,12 @@ const models = {
   Message: sequelize.import('./message'),
 };
 
-Object.keys(models).forEach(key => {
-  if ('associate' in models[key]) {
-    models[key].associate(models);
-  }
-});
+Object.values(models)
+  .forEach(model => {
+    if (model.associate) {
+      model.associate(models);
+    }
+  });
 
 export { sequelize };
 
